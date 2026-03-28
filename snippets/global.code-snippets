@@ -1,0 +1,520 @@
+{
+	// Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	//	"scope": "javascript,typescript",
+	//	"prefix": "log",
+	//	"body": [
+	//		"console.log('$1');",
+	//		"$2"
+	//	],
+	//	"description": "Log output to console"
+	// }
+	//
+	// You can also restrict snippets to specific files using include/exclude patterns:
+	// "Test snippet": {
+	//	"scope": "javascript,typescript",
+	//	"prefix": "test",
+	//	"body": "test('$1', () => {\n\t$0\n});",
+	//	"include": ["**/*.test.ts", "*.spec.ts"],
+	//	"exclude": ["**/temp/*.ts"],
+	//	"description": "Insert test block"
+	//
+	// ============================================
+	// 基础代码结构
+	// ============================================
+	"Simple function": {
+		"prefix": "df",
+			"body": [
+				"def ${1:name}(${2:args}):",
+			"    ${0:pass}"
+			],
+			"description": "[基础] 简单函数定义"
+	},
+		"Scientific function": {
+			"prefix": "defn",
+			"body": [
+				"def ${1:name}(${2:args}) -> ${3:None}:",
+			"    \"\"\"${4:Description}.",
+			"",
+			"    Parameters",
+			"    ----------",
+			"    ${5:param} : ${6:type}",
+			"        ${7:Parameter description}",
+			"",
+			"    Returns",
+			"    -------",
+			"    ${8:type}",
+			"        ${9:Return description}",
+			"    \"\"\"",
+			"    ${0:pass}"
+			],
+			"description": "[基础] 科学计算函数（带 NumPy 风格文档字符串）"
+		},
+		"Class": {
+			"prefix": "cls",
+			"body": [
+				"class ${1:ClassName}:",
+			"    \"\"\"${2:Description}.\"\"\"",
+			"",
+			"    def __init__(self, ${3:args}):",
+			"        ${0:pass}"
+			],
+			"description": "[基础] 类定义模板"
+		},
+		"Dataclass": {
+			"prefix": "dcls",
+			"body": [
+				"from dataclasses import dataclass",
+			"",
+			"@dataclass",
+			"class ${1:ClassName}:",
+			"    ${2:field}: ${3:type}"
+			],
+			"description": "[基础] dataclass（Python 3.7+）"
+		},
+		"import attrs": {
+			"prefix": "att",
+			"body": [
+				"from attrs import define, field, validators",
+			],
+			"description": "[基础] 导入attrs 模块"
+		},
+		"Attrs class": {
+			"prefix": "define",
+			"body": [
+				"@define",
+			"class ${1:ClassName}:",
+			"    ${2:field}: ${3:type}"
+			],
+			"description": "[基础] attrs 类（需要 attrs 库）"
+		},
+		"Main entry": {
+			"prefix": "main",
+			"body": [
+				"def main() -> None:",
+			"    ${0:pass}",
+			"",
+			"",
+			"if __name__ == \"__main__\":",
+			"    main()"
+			],
+			"description": "[基础] 主入口点"
+		},
+		"Module template": {
+			"prefix": "pymod",
+			"body": [
+				"#!/usr/bin/env python3",
+			"# -*- coding: utf-8 -*-",
+			"\"\"\"${1:Module description}.\"\"\"",
+			"",
+			"from __future__ import annotations",
+			"",
+			"def main() -> None:",
+			"    ${0:pass}",
+			"",
+			"",
+			"if __name__ == \"__main__\":",
+			"    main()"
+			],
+			"description": "[基础] Python 模块模板"
+		},
+		"attr post init": {
+			"prefix": "postinit",
+			"body": [
+				"def __attrs_post_init__(self):",
+			"    ${0:pass}"
+			],
+			"description": "[基础] attrs 类的 __post_init__ 方法"
+		},
+		// ============================================
+		// Numba 高性能计算
+		// ============================================
+		"Numba JIT function": {
+			"prefix": "njit",
+			"body": [
+				// "from numba import njit",
+				// "",
+				"@njit(cached=True)",
+			"def ${1:name}(${2:args}):",
+			"    ${0:pass}"
+			],
+			"description": "[Numba] Numba JIT 编译函数"
+		},
+		"Numba parallel loop": {
+			"prefix": "pjnjit",
+			"body": [
+				"from numba import njit, prange",
+			"",
+			"@njit(parallel=True)",
+			"def ${1:name}(${2:n}):",
+			"    for i in prange(${2:n}):",
+			"        ${0:pass}"
+			],
+			"description": "[Numba] Numba 并行循环"
+		},
+		// ============================================
+		// NumPy 数组操作
+		// ============================================
+		"Import numpy": {
+			"prefix": "np",
+			"body": [
+				"import numpy as np"
+			],
+			"description": "[NumPy] 导入 numpy"
+		},
+		"Numpy array": {
+			"prefix": "arr",
+			"body": [
+				"${1:name} = np.array(${2:data})"
+			],
+			"description": "[NumPy] 创建 numpy 数组"
+		},
+		"Zeros array": {
+			"prefix": "zeros",
+			"body": [
+				"${1:name} = np.zeros(${2:shape})"
+			],
+			"description": "[NumPy] 创建全零数组"
+		},
+		"Ones array": {
+			"prefix": "ones",
+			"body": [
+				"${1:name} = np.ones(${2:shape})"
+			],
+			"description": "[NumPy] 创建全一数组"
+		},
+		"Meshgrid": {
+			"prefix": "mesh",
+			"body": [
+				"X, Y = np.meshgrid(${1:x}, ${2:y}, indexing=\"ij\")"
+			],
+			"description": "[NumPy] 创建 meshgrid（矩阵索引）"
+		},
+		"Linspace": {
+			"prefix": "lin",
+			"body": [
+				"${1:x} = np.linspace(${2:start}, ${3:stop}, ${4:num})"
+			],
+			"description": "[NumPy] 线性空间"
+		},
+		"Arange": {
+			"prefix": "arange",
+			"body": [
+				"${1:x} = np.arange(${2:start}, ${3:stop}, ${4:step})"
+			],
+			"description": "[NumPy] 数组范围"
+		},
+		// ============================================
+		// 循环与迭代
+		// ============================================
+		"Enumerate loop": {
+			"prefix": "en",
+			"body": [
+				"for ${1:i}, ${2:x} in enumerate(${3:xs}):",
+			"    ${0:pass}"
+			],
+			"description": "[循环] enumerate 循环"
+		},
+		"Range loop": {
+			"prefix": "fr",
+			"body": [
+				"for ${1:i} in range(${2:n}):",
+			"    ${0:pass}"
+			],
+			"description": "[循环] range 循环"
+		},
+		"Parameter scan": {
+			"prefix": "scan",
+			"body": [
+				"results = []",
+			"for ${1:x} in ${2:xs}:",
+			"    results.append(${3:func(x)})"
+			],
+			"description": "[循环] 参数扫描"
+		},
+		// ============================================
+		// 命令行接口
+		// ============================================
+		"Argparse CLI": {
+			"prefix": "cli",
+			"body": [
+				"import argparse",
+			"",
+			"parser = argparse.ArgumentParser(description=\"${1:Description}\")",
+			"parser.add_argument(\"${2:name}\", type=${3:type}, help=\"${4:Help text}\")",
+			"parser.add_argument(\"--${5:option}\", type=${6:type}, default=${7:default}, help=\"${8:Help text}\")",
+			"",
+			"args = parser.parse_args()"
+			],
+			"description": "[CLI] argparse 命令行解析器"
+		},
+		// ============================================
+		// 测试
+		// ============================================
+		"Pytest test": {
+			"prefix": "test",
+			"body": [
+				"def test_${1:name}():",
+			"    ${2:result} = ${3:func()}",
+			"    assert ${2:result} == ${4:expected}"
+			],
+			"description": "[测试] pytest 测试函数"
+		},
+		"Pytest approx": {
+			"prefix": "testap",
+			"body": [
+				"import pytest",
+			"",
+			"def test_${1:name}():",
+			"    ${2:result} = ${3:func()}",
+			"    assert ${2:result} == pytest.approx(${4:expected}, abs=${5:1e-6})"
+			],
+			"description": "[测试] pytest 浮点近似比较"
+		},
+		// ============================================
+		// 调试
+		// ============================================
+		"Print debug": {
+			"prefix": "dbg",
+			"body": [
+				"print(${1:var})"
+			],
+			"description": "[调试] 调试打印"
+		},
+		"Print f-string debug": {
+			"prefix": "dbgf",
+			"body": [
+				"print(f\"${1:var} = {${1:var}}\")"
+			],
+			"description": "[调试] f-string 调试打印"
+		},
+		// ============================================
+		// Matplotlib 绘图
+		// ============================================
+		"Import matplotlib": {
+			"prefix": "plt",
+			"body": [
+				"import matplotlib.pyplot as plt",
+			"import seaborn as sns",
+			"import plotly.express as px",
+			"import plotly.graph_objects as go",
+			"from plotly.subplots import make_subplots",
+			"import scienceplots",
+			"plt.style.use([\"science\", \"notebook\", \"no-latex\"])"
+			],
+			"description": "[绘图] 导入 matplotlib"
+		},
+		"Basic plot": {
+			"prefix": "plot",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"ax.plot(${1:x}, ${2:y})",
+			"",
+			"ax.set_xlabel(\"${3:x}\")",
+			"ax.set_ylabel(\"${4:y}\")",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 基础折线图"
+		},
+		"Log-log plot": {
+			"prefix": "loglog",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"ax.loglog(${1:x}, ${2:y})",
+			"",
+			"ax.set_xlabel(\"${3:x}\")",
+			"ax.set_ylabel(\"${4:y}\")",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 双对数图（散射截面、幂律）"
+		},
+		"Semilogy plot": {
+			"prefix": "semilogy",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"ax.semilogy(${1:x}, ${2:y})",
+			"",
+			"ax.set_xlabel(\"${3:x}\")",
+			"ax.set_ylabel(\"${4:y}\")",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] Y 轴半对数图（衰减、谱尾）"
+		},
+		"Errorbar plot": {
+			"prefix": "err",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"ax.errorbar(${1:x}, ${2:y}, yerr=${3:err}, fmt=\"o\", capsize=3)",
+			"",
+			"ax.set_xlabel(\"${4:x}\")",
+			"ax.set_ylabel(\"${5:y}\")",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 误差棒图（实验/Monte Carlo）"
+		},
+		"Spectrum plot": {
+			"prefix": "spec",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"ax.plot(${1:omega}, ${2:intensity})",
+			"",
+			"ax.set_xlabel(\"Frequency\")",
+			"ax.set_ylabel(\"Intensity\")",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 谱图（吸收谱、散射谱）"
+		},
+		"Phase diagram": {
+			"prefix": "phase",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"im = ax.pcolormesh(${1:X}, ${2:Y}, ${3:Z}, shading=\"auto\")",
+			"",
+			"fig.colorbar(im, ax=ax)",
+			"",
+			"ax.set_xlabel(\"${4:x}\")",
+			"ax.set_ylabel(\"${5:y}\")",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 相图（二维参数扫描，pcolormesh）"
+		},
+		"Heatmap scan": {
+			"prefix": "heatmap",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"im = ax.imshow(${1:Z}, origin=\"lower\", aspect=\"auto\")",
+			"",
+			"fig.colorbar(im, ax=ax)",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 热力图（imshow）"
+		},
+		"Contour phase diagram": {
+			"prefix": "phasec",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"cs = ax.contour(${1:X}, ${2:Y}, ${3:Z})",
+			"",
+			"ax.clabel(cs)",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 等高线相图"
+		},
+		"Energy level diagram": {
+			"prefix": "levels",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"for i, E in enumerate(${1:levels}):",
+			"    ax.hlines(E, 0, 1, color=f\"C{i}\")",
+			"    ax.text(0.5, E, f\"$E_{i}$\", ha=\"center\", va=\"bottom\")",
+			"",
+			"ax.set_xlim(-0.1, 1.1)",
+			"ax.set_xlabel(\"\")",
+			"ax.set_ylabel(\"Energy\")",
+			"ax.set_title(\"Energy Levels\")",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 能级图（原子/分子能级）"
+		},
+		"Energy transition diagram": {
+			"prefix": "transition",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"ax.hlines(${1:E1}, 0, 1)",
+			"ax.hlines(${2:E2}, 0, 1)",
+			"",
+			"ax.annotate(\"\", xy=(0.5, ${2:E2}), xytext=(0.5, ${1:E1}),",
+			"            arrowprops=dict(arrowstyle=\"->\"))",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 能级跃迁"
+		},
+		"Parameter scan plot": {
+			"prefix": "pscan",
+			"body": [
+				"fig, ax = plt.subplots()",
+			"",
+			"for ${1:p} in ${2:params}:",
+			"    y = ${3:func}(${1:p})",
+			"    ax.plot(${4:x}, y, label=f\"${1:p}={${1:p}}\")",
+			"",
+			"ax.legend()",
+			"",
+			"plt.show()"
+			],
+			"description": "[绘图] 参数扫描多线图"
+		},
+		"Publication figure": {
+			"prefix": "pubfig",
+			"body": [
+				"fig, ax = plt.subplots(figsize=(6, 4))",
+			"",
+			"ax.plot(${1:x}, ${2:y})",
+			"",
+			"ax.set_xlabel(\"${3:x}\", fontsize=12)",
+			"ax.set_ylabel(\"${4:y}\", fontsize=12)",
+			"ax.tick_params(axis='both', labelsize=10)",
+			"",
+			"plt.tight_layout()",
+			"plt.savefig(\"${5:figure}.pdf\", dpi=300, bbox_inches=\"tight\")",
+			"plt.show()"
+			],
+			"description": "[绘图] 论文发表风格图（保存 PDF）"
+		},
+		"Colormap": {
+			"prefix": "cmap",
+			"body": [
+				"cmap = plt.get_cmap(\"${1|viridis,plasma,inferno,magma,cividis,RdBu_r,seismic|}\")"
+			],
+			"description": "[绘图] 选择色图（viridis/plasma/inferno/magma/cividis）"
+		},
+		"Matplotlib rcParams": {
+			"prefix": "rcparams",
+			"body": [
+				"plt.rcParams.update({",
+			"    \"font.size\": 12,",
+			"    \"figure.dpi\": 120,",
+			"    \"axes.grid\": False,",
+			"    \"figure.figsize\": (6, 4),",
+			"    \"savefig.dpi\": 300,",
+			"    \"savefig.bbox\": \"tight\",",
+			"})"
+			],
+			"description": "[绘图] Matplotlib 科研风格默认参数"
+		}
+	// "Python Head": {
+	//	"prefix": "pyhead",
+	//	"body": [
+	//		"#!/usr/bin/env python3",
+	//		"# -*- coding: utf-8 -*-",
+	//		"from __future__ import annotations",
+	//	],
+	//	"description": "[基础] Python 文件头（Unix 可执行脚本）"
+	// },
+}
