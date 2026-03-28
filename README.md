@@ -66,6 +66,50 @@ The backup created during the current migration is:
 
 Do not delete that backup until the linked setup has been stable for a while.
 
+## New Machine Restore
+
+Clone the repository, then run:
+
+```bash
+./scripts/bootstrap.sh
+```
+
+Useful flags:
+
+```bash
+./scripts/bootstrap.sh --dry-run
+./scripts/bootstrap.sh --home /tmp/dotfiles-test-home
+./scripts/bootstrap.sh --backup ~/.dotfiles-backup-bootstrap
+```
+
+What the script does:
+
+- walks the managed package directories
+- backs up any existing target file before replacing it
+- links real managed configs back into `$HOME`
+- skips `.example` files and sensitive templates that should stay local
+
+What it does not do:
+
+- it does not overwrite local secret-bearing files with templates
+- it does not install tools or applications automatically
+
+After running it on a new machine, review and materialize the local-only
+templates you actually need:
+
+- [`git/.gitconfig`](/Users/skyang/dotfiles/git/.gitconfig)
+- [`ssh/.ssh/config.example`](/Users/skyang/dotfiles/ssh/.ssh/config.example)
+- [`ai/.claude/settings.json.example`](/Users/skyang/dotfiles/ai/.claude/settings.json.example)
+- [`ai/.claude/.ccg/config.toml.example`](/Users/skyang/dotfiles/ai/.claude/.ccg/config.toml.example)
+- [`ai/.codex/config.toml.example`](/Users/skyang/dotfiles/ai/.codex/config.toml.example)
+- [`cli/.config/kaku/assistant.toml.example`](/Users/skyang/dotfiles/cli/.config/kaku/assistant.toml.example)
+
+Then install packages separately if needed:
+
+```bash
+brew bundle --file cli/.config/brewfile/Brewfile
+```
+
 ## Re-linking
 
 If a migrated file is accidentally replaced by a plain file, restore the link
