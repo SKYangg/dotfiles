@@ -51,4 +51,5 @@
 
 - `editor/.vscode/extensions/extensions.json`
   - Contains absolute local extension install paths under `/Users/skyang/.vscode/extensions`.
-  - It is not secret, but it is machine-specific state and may be worth replacing later with a cleaner export.
+  - It is retained only as a legacy runtime snapshot for the current machine.
+  - New-machine restore now skips this file and uses `editor/.vscode/extensions/extensions.list` plus `scripts/install-vscode-extensions.sh` instead.

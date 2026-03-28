@@ -36,6 +36,7 @@ Some files are intentionally not linked from the repository:
 - `~/.claude/settings.json`
 - `~/.codex/config.toml`
 - `~/.config/kaku/assistant.toml`
+- `~/.vscode/extensions/extensions.json`
 
 These either contain secrets, internal hosts, machine-specific trust settings,
 or should stay as local runtime state.
@@ -87,7 +88,8 @@ What the script does:
 - walks the managed package directories
 - backs up any existing target file before replacing it
 - links real managed configs back into `$HOME`
-- skips `.example` files and sensitive templates that should stay local
+- skips `.example` files, sensitive templates, and runtime state that should
+  stay local
 
 What it does not do:
 
@@ -109,6 +111,26 @@ Then install packages separately if needed:
 ```bash
 brew bundle --file cli/.config/brewfile/Brewfile
 ```
+
+If you want the same VS Code extension set on a new machine, install from the
+portable manifest instead of restoring the runtime state file:
+
+```bash
+./scripts/install-vscode-extensions.sh
+```
+
+If you use a different compatible editor CLI, point the script at it:
+
+```bash
+./scripts/install-vscode-extensions.sh --code-bin cursor
+```
+
+The manifest lives at
+[`editor/.vscode/extensions/extensions.list`](/Users/skyang/dotfiles/editor/.vscode/extensions/extensions.list).
+The legacy runtime snapshot
+[`editor/.vscode/extensions/extensions.json`](/Users/skyang/dotfiles/editor/.vscode/extensions/extensions.json)
+is kept only for current-machine compatibility and is not linked by
+`bootstrap.sh` on new machines.
 
 ## Re-linking
 
