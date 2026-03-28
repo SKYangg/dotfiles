@@ -1,0 +1,6 @@
+# Kaku Assistant configuration template
+enabled = true
+api_key = "${KAKU_API_KEY}"
+model = "doubao-seed-2-0-code-preview-latest"
+base_url = "https://ark.cn-beijing.volces.com/api/coding"
+# custom_headers = ["X-Customer-ID: your-customer-id"]

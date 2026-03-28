@@ -1,0 +1,25 @@
+# Core aliases
+alias ls="eza --icons --time-style +%Y-%m-%d\ %H:%M:%S"
+alias lg="lazygit"
+alias tree="ls -T"
+alias pwc="pwd | pbcopy"
+alias ff="fastfetch"
+alias vi="vim"
+alias br="brew"
+alias m-cli="matlab -nodesktop"
+
+# Navigation and config
+alias z="zoxide query --exclude ~ --"
+alias zi="zoxide query -i"
+alias zshconfig="vi ~/.zshrc"
+alias vimconfig="vi ~/.vimrc"
+alias sshconfig="vi ~/.ssh/config"
+
+# Maintenance
+alias brup="brew update && brew upgrade && brew cleanup"
+alias wrs="pgrep WindowServer | xargs sudo kill -9"
+alias prxon="sudo networksetup -setsocksfirewallproxystate Wi-Fi on"
+alias prxof="sudo networksetup -setsocksfirewallproxystate Wi-Fi off"
+
+# Project-specific helpers
+alias dld="source /Users/skyang/Tools/pdf_grabber/.venv/bin/activate && python /Users/skyang/Tools/pdf_grabber/download_pdfs.py"

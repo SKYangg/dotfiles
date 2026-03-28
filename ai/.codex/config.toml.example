@@ -1,0 +1,45 @@
+model_provider = "custom"
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+disable_response_storage = true
+
+[model_providers]
+[model_providers.custom]
+name = "custom"
+wire_api = "responses"
+requires_openai_auth = true
+base_url = "https://your-openai-compatible-endpoint.example.com/v1"
+
+[projects]
+[projects."/path/to/your/home"]
+trust_level = "trusted"
+
+[notice]
+[notice.model_migrations]
+"gpt-5.3-codex" = "gpt-5.4"
+
+[mcp_servers]
+
+[mcp_servers.ArXiv-mcp]
+type = "stdio"
+command = "uv"
+args = ["tool", "run", "arxiv-mcp-server", "--storage-path", "{$HOME}/Documents/arxiv_papers"]
+
+[mcp_servers.Ace_tool]
+type = "stdio"
+command = "auggie"
+args = ["--mcp", "--mcp-auto-workspace"]
+
+[mcp_servers.Ace_tool.env]
+AUGMENT_API_TOKEN = "${AUGMENT_API_TOKEN}"
+AUGMENT_API_URL = "https://your-augment-relay.example.com/relay/"
+
+[mcp_servers.Obsidian-mcp]
+type = "stdio"
+command = "uvx"
+args = ["mcp-obsidian"]
+
+[mcp_servers.Obsidian-mcp.env]
+OBSIDIAN_API_KEY = "${OBSIDIAN_API_KEY}"
+OBSIDIAN_HOST = "127.0.0.1"
+OBSIDIAN_PORT = "27124"

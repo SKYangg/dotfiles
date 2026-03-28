@@ -1,0 +1,36 @@
+[general]
+version = "1.7.85"
+language = "zh-CN"
+createdAt = "REPLACE_ME"
+
+[routing]
+mode = "smart"
+
+[routing.frontend]
+models = [ "gemini" ]
+primary = "gemini"
+strategy = "fallback"
+
+[routing.backend]
+models = [ "codex" ]
+primary = "codex"
+strategy = "fallback"
+
+[routing.review]
+models = [ "codex", "gemini" ]
+strategy = "parallel"
+
+[workflows]
+installed = [ "workflow", "plan", "execute", "team-research", "team-plan", "team-exec", "team-review", "frontend", "codex-exec", "context", "backend", "feat", "analyze", "debug", "optimize", "test", "review", "enhance", "init-project", "commit", "rollback", "clean-branches", "worktree", "spec-init", "spec-research", "spec-plan", "spec-impl", "spec-review" ]
+
+[paths]
+commands = "{$HOME}/.claude/commands/ccg"
+prompts = "{$HOME}/.claude/.ccg/prompts"
+backup = "{$HOME}/.claude/.ccg/backup"
+
+[mcp]
+provider = "fast-context"
+setup_url = "https://augmentcode.com/"
+
+[performance]
+liteMode = true
