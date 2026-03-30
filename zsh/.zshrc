@@ -3,7 +3,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Shared environment and aliases
+# Shared environment
 [ -f "$HOME/.zshrc.env" ] && source "$HOME/.zshrc.env"
 
 # Oh My Zsh
@@ -11,22 +11,31 @@ export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 plugins=(
-	rsync
+	# Core
 	git
 	aliases
-	zsh-syntax-highlighting
+
+	# File & system utilities
 	cp
-	thefuck
-	colored-man-pages
-	web-search
+	rsync
 	extract
+	colored-man-pages
+
+	# Shell tools
 	tmux
+	web-search
+	thefuck
+	command-not-found
+
+	# Dev environments
 	uv
 	conda
-	zsh-autosuggestions
-	command-not-found
 	docker
 	docker-compose
+
+	# Must be last
+	zsh-autosuggestions
+	zsh-syntax-highlighting
 )
 
 source "$ZSH/oh-my-zsh.sh"
@@ -57,7 +66,6 @@ bindkey -v
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-[[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
 function y() {
 	local tmp cwd
@@ -70,29 +78,5 @@ function y() {
 }
 HISTFILE=~/.zsh_history
 
-
-
-# Added by CodeBuddy
-export PATH="/Users/skyang/.codebuddy/bin:$PATH"
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# CCG multi-model collaboration system
-export PATH="/Users/skyang/.claude/bin:$PATH"
-
-[[ ":$PATH:" != *":$HOME/.config/kaku/zsh/bin:"* ]] && export PATH="$HOME/.config/kaku/zsh/bin:$PATH" # Kaku PATH Integration
-[[ -f "$HOME/.config/kaku/zsh/kaku.zsh" ]] && source "$HOME/.config/kaku/zsh/kaku.zsh" # Kaku Shell Integration
-
-# pnpm
-export PNPM_HOME="/Users/skyang/Library/pnpm"
-case ":$PATH:" in
-	*":$PNPM_HOME:"*) ;;
-	*) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# nanobrew
-export PATH="/opt/nanobrew/prefix/bin:$PATH"
-# quarkdown
-export PUPPETEER_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
