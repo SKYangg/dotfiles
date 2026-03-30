@@ -255,3 +255,16 @@ TaskOutput(task_id="<TASK_ID>", block=True, timeout=600000)
                                   - 禁用表情符号
 
                                   - 禁止截断输出
+
+---
+
+## Skills
+
+Skills 位于 `~/.config/myagents/skills/`，结构如下：
+- `tools/<name>/skill.md` — 工具类 skill（数据分析、可视化、量子计算等）
+- `workflows/<name>/skill.md` — 工作流 skill（科研写作、文献综述等）
+- `common/` — 基础行为定义
+- `roles/` — 角色定义（planner/coder/reviewer）
+
+需要某个 skill 时，直接 Read 对应的 skill.md 文件。
+可用 skill 列表见 `~/.config/myagents/skills/SKILLS_CATALOG.md`。

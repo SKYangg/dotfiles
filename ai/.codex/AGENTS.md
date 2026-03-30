@@ -1,4 +1,13 @@
-在需要时调用你已有的任意skill
+## Skills
+
+Skills 位于 `~/.config/myagents/skills/`，结构如下：
+- `tools/<name>/skill.md` — 工具类 skill
+- `workflows/<name>/skill.md` — 工作流 skill
+- `common/` — 基础行为定义
+- `roles/` — 角色定义（planner/coder/reviewer）
+
+需要某个 skill 时，Read 对应的 skill.md 文件。
+可用 skill 列表见 `~/.config/myagents/skills/SKILLS_CATALOG.md`。
 <!-- CCG-FAST-CONTEXT-START -->
 # fast-context MCP 工具使用指南
 
