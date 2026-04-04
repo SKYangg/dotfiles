@@ -22,4 +22,4 @@ alias prxon="sudo networksetup -setsocksfirewallproxystate Wi-Fi on"
 alias prxof="sudo networksetup -setsocksfirewallproxystate Wi-Fi off"
 
 # Project-specific helpers
-alias dld="source /Users/skyang/Tools/pdf_grabber/.venv/bin/activate && python /Users/skyang/Tools/pdf_grabber/download_pdfs.py"
+alias dld="source $HOME/Tools/pdf_grabber/.venv/bin/activate && python $HOME/Tools/pdf_grabber/download_pdfs.py"
