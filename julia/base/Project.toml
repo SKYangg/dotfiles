@@ -1,0 +1,8 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+OhMyREPL = "5fb14364-9ced-5910-84b2-373655c76a03"
+PkgTemplates = "14b8a8f1-9102-5b29-a752-f990bacb7fe1"
+ProfileView = "c46f51b8-102a-5cf2-8d2c-8597cb0e0da7"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
