@@ -3,5 +3,15 @@ use = "wylie102/duckdb"
 rev = "3f8c863"
 hash = "87b9233a74325e95011670ed20bbd0d4"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:piper"
+rev = "1962818"
+hash = "384464b6df8cb807425c521f8cd790f3"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:mime-ext"
+rev = "1962818"
+hash = "8b177921e50732b2c8e9d71aa5956270"
+
 [flavor]
 deps = []
