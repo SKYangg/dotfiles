@@ -83,3 +83,6 @@ HISTFILE=~/.zsh_history
 
 # Added by myclaude installer
 export PATH="$HOME/.claude/bin:$PATH"
+
+[[ ":$PATH:" != *":$HOME/.config/kaku/zsh/bin:"* ]] && export PATH="$HOME/.config/kaku/zsh/bin:$PATH" # Kaku PATH Integration
+[[ -f "$HOME/.config/kaku/zsh/kaku.zsh" ]] && source "$HOME/.config/kaku/zsh/kaku.zsh" # Kaku Shell Integration
