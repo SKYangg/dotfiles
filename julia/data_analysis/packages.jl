@@ -1,7 +1,6 @@
 
 using Pkg
-env = dirname(@__FILE__)
-Pkg.activate(env)
+Pkg.activate(@__DIR__)
 
 Pkg.add("CSV")
 Pkg.add("DataFrames")
