@@ -159,8 +159,7 @@ rules = [
 	]
 	fetchers = [
 # Mimetype
-# { id = "mime", url = "*", run = "mime", prio = "high" },
-{ id = "mime", url = "*", run = "mime.local", prio = "high" },
+{ id = "mime", url = "*", run = "mime", prio = "high" },
 { id = "mime", url = "*/", run = "mime.dir", prio = "high" },
 
 	]
