@@ -8,6 +8,14 @@ Skills 位于 `~/.config/myagents/skills/`，结构如下：
 
 需要某个 skill 时，Read 对应的 skill.md 文件。
 可用 skill 列表见 `~/.config/myagents/skills/SKILLS_CATALOG.md`。
+
+## Python interpreter
+
+- For local Python scripts, validators, and ad hoc checks, prefer `/opt/homebrew/Caskroom/miniconda/base/envs/work/bin/python` so common scientific and YAML dependencies are available. Repository-local interpreter, virtualenv, or project instructions take precedence.
+
+## Scientific computing
+
+- For scientific or numerical Python/Julia work, use the `$scientific-computing` skill. Repository-local instructions, tests, and numerical conventions remain authoritative.
 <!-- CCG-FAST-CONTEXT-START -->
 # fast-context MCP 工具使用指南
 
