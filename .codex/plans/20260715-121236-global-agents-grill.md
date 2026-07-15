@@ -22,7 +22,7 @@ before high-impact planning without slowing ordinary work.
 ## Success Criteria
 
 - `/Users/skyang/dotfiles/ai/.codex/AGENTS.md` remains the global source of
-  truth and is reduced from 16,101 bytes / 343 lines to at most 10,240 bytes / 
+  truth and is reduced from 16,101 bytes / 343 lines to at most 10,240 bytes /
   220 lines.
 - The condensed file preserves instruction precedence, evidence-first work,
   scope control, user-work protection, verification, search selection, skill
