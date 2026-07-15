@@ -1,0 +1,12 @@
+{
+    "Activate Current Folder as Environment": {
+        "scope": "julia,jupyter-notebook",
+        "prefix": "actv",
+        "body": [
+            "import Pkg",
+            "Pkg.activate(@__DIR__)",
+            "Pkg.instantiate()"
+        ],
+        "description": "[基础] 激活当前文件夹作为环境"
+    }
+}

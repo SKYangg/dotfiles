@@ -1,0 +1,976 @@
+{
+	// Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+	// used to trigger the snippet, and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+	// Placeholders with the same ids are connected.
+	//
+	// You can also restrict snippets to specific files using include/exclude patterns:
+	// "Test snippet": {
+	//	"scope": "javascript,typescript",
+	//	"prefix": "test",
+	//	"body": "test('$1', () => {\n\t$0\n});",
+	//	"include": ["**/*.test.ts", "*.spec.ts"],
+	//	"exclude": ["**/temp/*.ts"],
+	//	"description": "Insert test block"
+	//
+	// ============================================
+	// 基础代码结构
+	// ============================================
+	"Script template": {
+		"prefix": "mscript",
+		"body": [
+			"%% ${1:Script title}",
+			"% ${2:Description}",
+			"",
+			"clear; clc; close all;",
+			"",
+			"%% Parameters",
+			"${3:param1} = ${4:value1};",
+			"${5:param2} = ${6:value2};",
+			"",
+			"%% Main",
+			"$0",
+			"",
+			"%% Save results",
+			"% save('results.mat');"
+		],
+		"description": "[基础] MATLAB 脚本模板"
+	},
+	"Simple function": {
+		"prefix": "mfun",
+		"body": [
+			"function ${2:output} = ${1:name}(${3:args})",
+			"%${1:NAME} Brief description",
+			"%   ${2:OUTPUT} = ${1:NAME}(${3:ARGS}) detailed description",
+			"%",
+			"%   Example:",
+			"%       ${2:output} = ${1:name}(${3:args});",
+			"%",
+			"%   See also: OTHER_FUNCTION",
+			"",
+			"$0",
+			"end"
+		],
+		"description": "[基础] 简单函数定义(带帮助文档)"
+	},
+	"Function with input parser": {
+		"prefix": "mfunp",
+		"body": [
+			"function ${2:output} = ${1:name}(varargin)",
+			"%${1:NAME} Brief description",
+			"%   ${2:OUTPUT} = ${1:NAME}(Name, Value) detailed description",
+			"%",
+			"%   Name-Value Arguments:",
+			"%       ${3:Param1} - Description (default: ${4:default1})",
+			"%       ${5:Param2} - Description (default: ${6:default2})",
+			"%",
+			"%   Example:",
+			"%       ${2:output} = ${1:name}('${3:Param1}', ${4:default1});",
+			"",
+			"p = inputParser;",
+			"p.addParameter('${3:Param1}', ${4:default1}, @isnumeric);",
+			"p.addParameter('${5:Param2}', ${6:default2}, @ischar);",
+			"p.parse(varargin{:});",
+			"opts = p.Results;",
+			"",
+			"$0",
+			"end"
+		],
+		"description": "[基础] 带 inputParser 的函数"
+	},
+	"Main entry point": {
+		"prefix": "mmain",
+		"body": [
+			"function main()",
+			"%MAIN Main entry point for script",
+			"",
+			"$0",
+			"end",
+			"",
+			"if isdeployed || (strcmp(getenv('MATLAB_RUNNING'), 'true'))",
+			"    % Running in deployed mode",
+			"    main();",
+			"elseif isequal(mfilename, 'main')",
+			"    % Running as script",
+			"    main();",
+			"end"
+		],
+		"description": "[基础] 主入口点(支持脚本/函数双重模式)"
+	},
+	"Anonymous function": {
+		"prefix": "mfuna",
+		"body": [
+			"${1:f} = @(${2:x}) ${3:expression};"
+		],
+		"description": "[基础] 匿名函数"
+	},
+	// ============================================
+	// 矩阵与数组操作
+	// ============================================
+	"Create vector": {
+		"prefix": "mvec",
+		"body": [
+			"${1:v} = ${2:start}:${3:step}:${4:stop};"
+		],
+		"description": "[矩阵] 创建向量"
+	},
+	"Linspace": {
+		"prefix": "mlin",
+		"body": [
+			"${1:x} = linspace(${2:start}, ${3:stop}, ${4:num});"
+		],
+		"description": "[矩阵] 线性空间向量"
+	},
+	"Zeros matrix": {
+		"prefix": "mzeros",
+		"body": [
+			"${1:M} = zeros(${2:rows}, ${3:cols});"
+		],
+		"description": "[矩阵] 零矩阵"
+	},
+	"Ones matrix": {
+		"prefix": "mones",
+		"body": [
+			"${1:M} = ones(${2:rows}, ${3:cols});"
+		],
+		"description": "[矩阵] 全一矩阵"
+	},
+	"Identity matrix": {
+		"prefix": "meye",
+		"body": [
+			"${1:I} = eye(${2:n});"
+		],
+		"description": "[矩阵] 单位矩阵"
+	},
+	"Random uniform": {
+		"prefix": "mrand",
+		"body": [
+			"${1:R} = rand(${2:rows}, ${3:cols});"
+		],
+		"description": "[矩阵] 均匀随机矩阵"
+	},
+	"Random normal": {
+		"prefix": "mrandn",
+		"body": [
+			"${1:R} = randn(${2:rows}, ${3:cols});"
+		],
+		"description": "[矩阵] 正态随机矩阵"
+	},
+	"Meshgrid": {
+		"prefix": "mmesh",
+		"body": [
+			"[${1:X}, ${2:Y}] = meshgrid(${3:x}, ${4:y});"
+		],
+		"description": "[矩阵] 创建网格"
+	},
+	"Preallocate array": {
+		"prefix": "mpreal",
+		"body": [
+			"${1:result} = zeros(${2:size1}, ${3:size2});",
+			"for ${4:i} = 1:${2:size1}",
+			"    ${1:result}(${4:i}, :) = ${5:compute}(${4:i});",
+			"end"
+		],
+		"description": "[矩阵] 预分配数组(循环优化)"
+	},
+	"Solve linear system": {
+		"prefix": "msolve",
+		"body": [
+			"${1:x} = ${2:A} \\ ${3:b};"
+		],
+		"description": "[矩阵] 求解线性系统 Ax=b"
+	},
+	"Eigenvalues": {
+		"prefix": "meig",
+		"body": [
+			"[${1:V}, ${2:D}] = eig(${3:A});"
+		],
+		"description": "[矩阵] 特征值和特征向量"
+	},
+	"SVD": {
+		"prefix": "msvd",
+		"body": [
+			"[${1:U}, ${2:S}, ${3:V}] = svd(${4:A});"
+		],
+		"description": "[矩阵] 奇异值分解"
+	},
+	// ============================================
+	// 数据导入导出
+	// ============================================
+	"Load MAT file": {
+		"prefix": "mload",
+		"body": [
+			"load('${1:data}.mat');"
+		],
+		"description": "[IO] 加载 MAT 文件"
+	},
+	"Save MAT file": {
+		"prefix": "msave",
+		"body": [
+			"save('${1:data}.mat', '${2:var1}', '${3:var2}');"
+		],
+		"description": "[IO] 保存变量到 MAT 文件"
+	},
+	"Read table": {
+		"prefix": "mreadt",
+		"body": [
+			"${1:T} = readtable('${2:data}.csv');"
+		],
+		"description": "[IO] 读取表格"
+	},
+	"Read matrix": {
+		"prefix": "mreadm",
+		"body": [
+			"${1:M} = readmatrix('${2:data}.csv');"
+		],
+		"description": "[IO] 读取矩阵"
+	},
+	"Write table": {
+		"prefix": "mwritet",
+		"body": [
+			"writetable(${1:T}, '${2:output}.csv');"
+		],
+		"description": "[IO] 写入表格"
+	},
+	"Write matrix": {
+		"prefix": "mwritem",
+		"body": [
+			"writematrix(${1:M}, '${2:output}.csv');"
+		],
+		"description": "[IO] 写入矩阵"
+	},
+	"Read image": {
+		"prefix": "mimread",
+		"body": [
+			"${1:img} = imread('${2:image}.png');"
+		],
+		"description": "[IO] 读取图像"
+	},
+	"Write image": {
+		"prefix": "mimwrite",
+		"body": [
+			"imwrite(${1:img}, '${2:output}.png');"
+		],
+		"description": "[IO] 写入图像"
+	},
+	// ============================================
+	// 统计与数据分析
+	// ============================================
+	"Descriptive statistics": {
+		"prefix": "mstats",
+		"body": [
+			"${1:m} = mean(${2:data});",
+			"${3:s} = std(${2:data});",
+			"${4:med} = median(${2:data});",
+			"[${5:minVal}, ${6:minIdx}] = min(${2:data});",
+			"[${7:maxVal}, ${8:maxIdx}] = max(${2:data});"
+		],
+		"description": "[统计] 描述性统计"
+	},
+	"Polyfit": {
+		"prefix": "mpolyfit",
+		"body": [
+			"${1:p} = polyfit(${2:x}, ${3:y}, ${4:n});",
+			"${5:y_fit} = polyval(${1:p}, ${2:x});"
+		],
+		"description": "[统计] 多项式拟合"
+	},
+	"Correlation coefficient": {
+		"prefix": "mcorr",
+		"body": [
+			"${1:R} = corrcoef(${2:X}, ${3:Y});"
+		],
+		"description": "[统计] 相关系数矩阵"
+	},
+	"Movmean": {
+		"prefix": "mmovmean",
+		"body": [
+			"${1:y_smooth} = movmean(${2:y}, ${3:window_size});"
+		],
+		"description": "[统计] 移动平均"
+	},
+	"Costum Fit": {
+		"prefix": "mfit",
+		"body": [
+			"${1:model} = ${2:expr_of_function};",
+			"${2:fit_function} = fittype(${1:model}, ...",
+			"    'independent', {${3:'x'}}, ...",
+			"    'coefficients', {${4:'coefficients'}});",
+			"${5:fit_options} = fitoptions(${2:fit_function});",
+			"${5:fit_options}.Method = NonlinearLeastSquares;",
+			"${5:fit_options}.MaxIter = 1000;",
+			"${5:fit_options}.StartPoint = ${6:StartPoint};",
+			"${5:fit_options}.Lower = ${7:LowerLimit};",
+			"${5:fit_options}.Upper = ${8:UpperLimit};",
+			"[${9:cfun}, ${10:gof}] = fit({${11:xdata}}, ${12:ydata}, ${2:fit_function}, ${5:fit_options});",
+			"n_points = 100;",
+			"xfit = linspace(min(${11:xdata}), max(${11:xdata}), n_points);",
+			"yfit = cfun(xfit);"
+		],
+		"description": "[统计] 自定义拟合"
+	},
+	// ============================================
+	// 控制流与循环
+	// ============================================
+	"For loop": {
+		"prefix": "mfor",
+		"body": [
+			"for ${1:i} = 1:${2:n}",
+			"    $0",
+			"end"
+		],
+		"description": "[控制] for 循环"
+	},
+	"If-else": {
+		"prefix": "mif",
+		"body": [
+			"if ${1:condition}",
+			"    $0",
+			"else",
+			"    ",
+			"end"
+		],
+		"description": "[控制] if-else 条件"
+	},
+	"If-elseif-else": {
+		"prefix": "mifelse",
+		"body": [
+			"if ${1:condition1}",
+			"    $0",
+			"elseif ${2:condition2}",
+			"    ",
+			"else",
+			"    ",
+			"end"
+		],
+		"description": "[控制] if-elseif-else 条件"
+	},
+	"While loop": {
+		"prefix": "mwhile",
+		"body": [
+			"while ${1:condition}",
+			"    $0",
+			"end"
+		],
+		"description": "[控制] while 循环"
+	},
+	"Parameter scan": {
+		"prefix": "mscan",
+		"body": [
+			"${1:params} = ${2:start}:${3:step}:${4:stop};",
+			"${5:results} = zeros(size(${1:params}));",
+			"for ${6:i} = 1:length(${1:params})",
+			"    ${7:p} = ${1:params}(${6:i});",
+			"    ${5:results}(${6:i}) = ${8:compute}(${7:p});",
+			"end"
+		],
+		"description": "[控制] 参数扫描模式"
+	},
+	// ============================================
+	// 调试
+	// ============================================
+	"Disp debug": {
+		"prefix": "mdisp",
+		"body": [
+			"disp(${1:var});"
+		],
+		"description": "[调试] disp 输出"
+	},
+	"Fprintf debug": {
+		"prefix": "mfprintf",
+		"body": [
+			"fprintf('${1:var} = %.3f\\n', ${1:var});"
+		],
+		"description": "[调试] fprintf 格式化输出"
+	},
+	"Stop at breakpoint": {
+		"prefix": "mkeyboard",
+		"body": [
+			"keyboard;"
+		],
+		"description": "[调试] 停止在断点(进入交互模式)"
+	},
+	// ============================================
+	// Figure 创建与管理
+	// ============================================
+	"Create figure": {
+		"prefix": "mfig",
+		"body": [
+			"${1:f} = figure('Name', '${2:FigureName}', 'Position', [${3:100} ${4:100} ${5:900} ${6:600}], 'Color', 'w');"
+		],
+		"description": "[绘图] 创建 figure 窗口"
+	},
+	"Get or create figure": {
+		"prefix": "mfigget",
+		"body": [
+			"${1:f} = findobj('Type', 'figure', 'Name', '${2:FigureName}');",
+			"if isempty(${1:f})",
+			"    ${1:f} = figure('Name', '${2:FigureName}', 'Color', 'w');",
+			"else",
+			"    figure(${1:f});",
+			"end"
+		],
+		"description": "[绘图] 获取已存在的 named figure 或创建新的"
+	},
+	"Safe figure with numeric handle": {
+		"prefix": "mfigsafe",
+		"body": [
+			"${1:f} = figure(${2:1});",
+			"set(${1:f}, 'Color', 'w');",
+			"set(${1:f}, 'Position', [${3:100} ${4:100} ${5:900} ${6:600}]);"
+		],
+		"description": "[绘图] 使用数值句柄的 figure"
+	},
+	// ============================================
+	// 坐标轴与布局
+	// ============================================
+	"Create axes": {
+		"prefix": "maxes",
+		"body": [
+			"${1:ax} = axes('Parent', ${2:f});",
+			"hold(${1:ax}, 'on');",
+			"box(${1:ax}, 'on');"
+		],
+		"description": "[绘图] 创建 axes 并设置 hold/box"
+	},
+	"Styled axes": {
+		"prefix": "maxesst",
+		"body": [
+			"${1:ax} = axes('Parent', ${2:f}, 'Position', [0.1 0.1 0.8 0.8]);",
+			"hold(${1:ax}, 'on');",
+			"box(${1:ax}, 'on');",
+			"grid(${1:ax}, 'on');",
+			"grid minor;",
+			"set(${1:ax}, 'LineWidth', ${3:1.2}, 'FontSize', ${4:12});"
+		],
+		"description": "[绘图] 创建带样式的 axes"
+	},
+	"Tiled layout": {
+		"prefix": "mtile",
+		"body": [
+			"${1:tl} = tiledlayout(${2:rows}, ${3:cols}, 'TileSpacing', '${4|compact,loose,none|}', 'Padding', '${5|compact,loose,none|}');"
+		],
+		"description": "[绘图] 创建 tiledlayout"
+	},
+	"Next tile": {
+		"prefix": "mnext",
+		"body": [
+			"${1:ax} = nexttile;",
+			"hold(${1:ax}, 'on');",
+			"box(${1:ax}, 'on');"
+		],
+		"description": "[绘图] 创建 next tile 并初始化"
+	},
+	"Next tile span": {
+		"prefix": "mnextspan",
+		"body": [
+			"${1:ax} = nexttile([${2:rows} ${3:cols}]);",
+			"hold(${1:ax}, 'on');",
+			"box(${1:ax}, 'on');"
+		],
+		"description": "[绘图] 创建跨越多个网格的 tile"
+	},
+	// ============================================
+	// 2D 绘图
+	// ============================================
+	"Plot line": {
+		"prefix": "mplot",
+		"body": [
+			"${1:h} = plot(${2:ax}, ${3:x}, ${4:y}, ...",
+			"    'DisplayName', '${5:data}', ...",
+			"    'LineStyle', '${6|-,--,:,-.|}', ...",
+			"    'Marker', '${7|none,.o,+,*,.,x,_,s,d,^,v,>,<,p,h|}', ...",
+			"    'LineWidth', ${8:1.5});"
+		],
+		"description": "[绘图] 绘制线图"
+	},
+	"Scatter plot": {
+		"prefix": "mscatter",
+		"body": [
+			"${1:h} = scatter(${2:ax}, ${3:x}, ${4:y}, ${5:36}, 'DisplayName', '${6:data}', 'LineWidth', ${7:1.0});"
+		],
+		"description": "[绘图] 散点图"
+	},
+	"Errorbar": {
+		"prefix": "merr",
+		"body": [
+			"${1:h} = errorbar(${2:ax}, ${3:x}, ${4:y}, ${5:err}, ...",
+			"    'DisplayName', '${6:data}', 'LineWidth', ${7:1.2});"
+		],
+		"description": "[绘图] 误差棒图"
+	},
+	"Horizontal reference line": {
+		"prefix": "myref",
+		"body": [
+			"yline(${1:ax}, ${2:0}, '${3|--,:,-.|}', '${4:reference}', 'LineWidth', ${5:1.2}, 'LabelHorizontalAlignment', '${6|left,middle,right|}');"
+		],
+		"description": "[绘图] 水平参考线"
+	},
+	"Vertical reference line": {
+		"prefix": "mxref",
+		"body": [
+			"xline(${1:ax}, ${2:0}, '${3|--,:,-.|}', '${4:reference}', 'LineWidth', ${5:1.2}, 'LabelVerticalAlignment', '${6|middle,top,bottom|}');"
+		],
+		"description": "[绘图] 垂直参考线"
+	},
+	// ============================================
+	// 图例与标注
+	// ============================================
+	"Labels and title": {
+		"prefix": "mlabel",
+		"body": [
+			"xlabel(${1:ax}, '${2:x}');",
+			"ylabel(${1:ax}, '${3:y}');",
+			"title(${1:ax}, '${4:title}');"
+		],
+		"description": "[绘图] 设置 xlabel、ylabel、title"
+	},
+	"Show legend": {
+		"prefix": "mlegshow",
+		"body": [
+			"${1:lgd} = legend(${2:ax}, 'show');",
+			"set(${1:lgd}, 'Location', '${3|best,bestoutside,north,south,east,west,northeast,northwest,southeast,southwest|}', 'Box', '${4|off,on|}');"
+		],
+		"description": "[绘图] 显示图例(使用 DisplayName)"
+	},
+	"Legend with explicit handles": {
+		"prefix": "mleghand",
+		"body": [
+			"${1:lgd} = legend(${2:ax}, [${3:p1}, ${4:p2}], {${5:'data1'}, ${6:'data2'}}, 'Location', '${7:best}', 'Box', '${8:off}');"
+		],
+		"description": "[绘图] 使用显式句柄的图例"
+	},
+	"Multiline legend string": {
+		"prefix": "mlegmulti",
+		"body": [
+			"${1:legend_str} = sprintf('${2:line1}\\n${3:line2}');"
+		],
+		"description": "[绘图] 多行图例字符串"
+	},
+	"Polyfit legend text": {
+		"prefix": "mlegfit",
+		"body": [
+			"${1:coeffs} = coeffvalues(${2:cfun});",
+			"${3:pairs} = arrayfun(@(i) sprintf('${4:a}%d = %.4g', i, ${1:coeffs}(i)), 1:numel(${1:coeffs}), 'UniformOutput', false);",
+			"${5:legend_str} = sprintf('%s\\n%s', formula(${2:cfun}), strjoin(${3:pairs}, ', '));"
+		],
+		"description": "[绘图] 多项式拟合的图例文本"
+	},
+	// ============================================
+	// 图形样式
+	// ============================================
+	"Set Color Palette": {
+		"prefix": "mpal",
+		"body": [
+			"COLOR = orderedcolors('${1|gem,gem12,glow,glow12,sail,reef,meadow,dye,earth|}');"
+		],
+		"description": "[绘图] 设置颜色方案"
+	},
+	"Set axes style": {
+		"prefix": "maxstyle",
+		"body": [
+			"set(${1:ax}, ...",
+			"    'LineWidth', ${2:1.2}, ...",
+			"    'FontSize', ${3:12}, ...",
+			"    'TickDir', '${4|out,in,both|}', ...",
+			"    'Box', '${5|on,off|}' ...",
+			");"
+		],
+		"description": "[绘图] 设置坐标轴样式"
+	},
+	"Grid controls": {
+		"prefix": "mgrid",
+		"body": [
+			"grid(${1:ax}, '${2|on,off|}');",
+			"${1:ax}.XMinorGrid = '${3|off,on|}';",
+			"${1:ax}.YMinorGrid = '${4|off,on|}';"
+		],
+		"description": "[绘图] 网格控制"
+	},
+	"Set axes limits": {
+		"prefix": "mlim",
+		"body": [
+			"xlim(${1:ax}, [${2:xmin} ${3:xmax}]);",
+			"ylim(${1:ax}, [${4:ymin} ${5:ymax}]);"
+		],
+		"description": "[绘图] 设置坐标范围"
+	},
+	"Link axes": {
+		"prefix": "mlinkax",
+		"body": [
+			"linkaxes([${1:ax1}, ${2:ax2}], '${3|x,y,xy|}');"
+		],
+		"description": "[绘图] 链接多个坐标轴"
+	},
+	// ============================================
+	// 图形导出
+	// ============================================
+	"Export graphics": {
+		"prefix": "mexport",
+		"body": [
+			"exportgraphics(${1:f}, '${2:figure}.pdf', 'ContentType', '${3|vector,image|}', 'Resolution', ${4:300});"
+		],
+		"description": "[绘图] 使用 exportgraphics 导出"
+	},
+	"Save figure": {
+		"prefix": "msavefig",
+		"body": [
+			"savefig(${1:f}, '${2:figure}.fig');"
+		],
+		"description": "[绘图] 保存 .fig 文件"
+	},
+	// ============================================
+	// 完整绘图模板
+	// ============================================
+	"Publication-style plot": {
+		"prefix": "mplotpub",
+		"body": [
+			"${1:f} = figure('Name', '${2:FigureName}', 'Color', 'w', 'Position', [100 100 900 600]);",
+			"${3:ax} = axes('Parent', ${1:f});",
+			"hold(${3:ax}, 'on');",
+			"box(${3:ax}, 'on');",
+			"set(${3:ax}, 'LineWidth', 1.2, 'FontSize', 12);",
+			"",
+			"plot(${3:ax}, ${4:x}, ${5:y}, 'LineWidth', 1.5, 'DisplayName', '${6:data}');",
+			"",
+			"xlabel(${3:ax}, '${7:x}');",
+			"ylabel(${3:ax}, '${8:y}');",
+			"title(${3:ax}, '${9:title}');",
+			"legend(${3:ax}, 'show', 'Location', 'best', 'Box', 'off');",
+			"grid(${3:ax}, 'on');"
+		],
+		"description": "[绘图] 完整发表风格绘图骨架"
+	},
+	// ============================================
+	// 3D 绘图与可视化
+	// ============================================
+	"3D Surface plot": {
+		"prefix": "msurf",
+		"body": [
+			"${1:h} = surf(${2:ax}, ${3:X}, ${4:Y}, ${5:Z}, ...",
+			"    'EdgeColor', '${6|none,flat,interp|}', ...",
+			"    'FaceColor', '${7|flat,interp,none|}');",
+			"colorbar;"
+		],
+		"description": "[3D绘图] 曲面图"
+	},
+	"3D Mesh plot": {
+		"prefix": "mmesh3d",
+		"body": [
+			"${1:h} = mesh(${2:ax}, ${3:X}, ${4:Y}, ${5:Z});",
+			"colorbar;"
+		],
+		"description": "[3D绘图] 网格图"
+	},
+	"Contour plot": {
+		"prefix": "mcontour",
+		"body": [
+			"${1:h} = contour(${2:ax}, ${3:X}, ${4:Y}, ${5:Z}, ${6:levels});"
+		],
+		"description": "[3D绘图] 等高线图"
+	},
+	"Filled contour plot": {
+		"prefix": "mcontourf",
+		"body": [
+			"${1:h} = contourf(${2:ax}, ${3:X}, ${4:Y}, ${5:Z}, ${6:levels});",
+			"colorbar;"
+		],
+		"description": "[3D绘图] 填充等高线图"
+	},
+	"Matrix image display": {
+		"prefix": "mimagesc",
+		"body": [
+			"${1:h} = imagesc(${2:ax}, ${3:Z});",
+			"colorbar;",
+			"colormap(${4:ax}, '${5|parula,jet,gray,hsv,hot,cool,spring,summer,autumn,winter|}');"
+		],
+		"description": "[3D绘图] 矩阵图像显示"
+	},
+	"3D View setting": {
+		"prefix": "mview3d",
+		"body": [
+			"view(${1:ax}, ${2:az}, ${3:el});"
+		],
+		"description": "[3D绘图] 设置3D视角"
+	},
+	"Colormap setting": {
+		"prefix": "mcolormap",
+		"body": [
+			"colormap(${1:ax}, '${2|parula,jet,gray,hsv,hot,cool,spring,summer,autumn,winter,viridis|}');",
+			"colorbar;"
+		],
+		"description": "[3D绘图] 设置颜色图"
+	},
+	"3D Scatter plot": {
+		"prefix": "mscatter3",
+		"body": [
+			"${1:h} = scatter3(${2:ax}, ${3:x}, ${4:y}, ${5:z}, ${6:36}, ${7:c}, ...",
+			"    'filled', 'DisplayName', '${8:data}');"
+		],
+		"description": "[3D绘图] 3D散点图"
+	},
+	// ============================================
+	// ODE 求解
+	// ============================================
+	"ODE45 Solver": {
+		"prefix": "mode45",
+		"body": [
+			"${1:tspan} = [${2:t0}, ${3:tf}];",
+			"${4:y0} = [${5:initial_conditions}];",
+			"[${6:t}, ${7:y}] = ode45(@(${8:odefun}), ${1:tspan}, ${4:y0});"
+		],
+		"description": "[ODE] ODE45求解"
+	},
+	"ODE Function definition": {
+		"prefix": "modefun",
+		"body": [
+			"function dydt = ${1:ode_fun}(${2:t}, ${3:y})",
+			"%ODE_FUN ODE function definition",
+			"    dydt = zeros(size(${3:y}));",
+			"    dydt(1) = ${4:expression_1};",
+			"    dydt(2) = ${5:expression_2};",
+			"end"
+		],
+		"description": "[ODE] ODE函数定义模板"
+	},
+	"Parameterized ODE Function": {
+		"prefix": "modeparam",
+		"body": [
+			"${1:ode_handle} = @(${2:t}, ${3:y}) ${4:my_ode_fun}(${2:t}, ${3:y}, ${5:p1}, ${6:p2});",
+			"[${7:t}, ${8:y}] = ode45(${1:ode_handle}, ${9:tspan}, ${10:y0});"
+		],
+		"description": "[ODE] 参数化ODE函数"
+	},
+	// ============================================
+	// 信号处理基础
+	// ============================================
+	"FFT Analysis": {
+		"prefix": "mfft",
+		"body": [
+			"${1:Y} = fft(${2:y});",
+			"${3:n} = length(${2:y});",
+			"${4:f} = (0:${3:n}-1) * (${5:Fs}/${3:n});",
+			"${6:P2} = abs(${1:Y}/${3:n});",
+			"${7:P1} = ${6:P2}(1:floor(${3:n}/2)+1);",
+			"${7:P1}(2:end-1) = 2*${7:P1}(2:end-1);"
+		],
+		"description": "[信号] 快速傅里叶变换分析"
+	},
+	"Spectrogram": {
+		"prefix": "mspec",
+		"body": [
+			"spectrogram(${2:y}, ${3:window}, ${4:noverlap}, ${5:nfft}, ${6:Fs}, 'yaxis');",
+			"colorbar;"
+		],
+		"description": "[信号] 频谱图"
+	},
+	"Sine wave generator": {
+		"prefix": "msin",
+		"body": [
+			"${1:t} = 0:1/${2:Fs}:${3:T};",
+			"${4:y} = ${5:A} * sin(2*pi*${6:f}*${1:t} + ${7:phi});"
+		],
+		"description": "[信号] 正弦波生成"
+	},
+	"White noise generator": {
+		"prefix": "mnoise",
+		"body": [
+			"${1:y} = ${2:scale} * randn(size(${3:t}));"
+		],
+		"description": "[信号] 白噪声生成"
+	},
+	// ============================================
+	// 文件与目录操作
+	// ============================================
+	"Get file list": {
+		"prefix": "mdir",
+		"body": [
+			"${1:files} = dir('${2:path}/*.${3:ext}');",
+			"${4:filenames} = {${1:files}.name};"
+		],
+		"description": "[文件] 获取文件列表"
+	},
+	"Path concatenation": {
+		"prefix": "mfullfile",
+		"body": [
+			"${1:filepath} = fullfile('${2:dir1}', '${3:dir2}', '${4:filename}');"
+		],
+		"description": "[文件] 路径拼接"
+	},
+	"Check file existence": {
+		"prefix": "mexist",
+		"body": [
+			"if exist('${1:filename}', '${2|file,dir|}')",
+			"    $0",
+			"end"
+		],
+		"description": "[文件] 检查文件/目录是否存在"
+	},
+	"Batch processing template": {
+		"prefix": "mbatch",
+		"body": [
+			"${1:files} = dir('${2:path}/*.${3:ext}');",
+			"${4:results} = cell(length(${1:files}), 1);",
+			"for ${5:i} = 1:length(${1:files})",
+			"    ${6:filename} = fullfile(${1:files}(${5:i}).folder, ${1:files}(${5:i}).name);",
+			"    ${7:data} = ${8:load_function}(${6:filename});",
+			"    ${4:results}{${5:i}} = ${9:process_function}(${7:data});",
+			"end"
+		],
+		"description": "[文件] 批量处理文件模板"
+	},
+	// ============================================
+	// 计时与性能
+	// ============================================
+	"tic/toc timing": {
+		"prefix": "mtic",
+		"body": [
+			"tic;",
+			"$0",
+			"${1:elapsed_time} = toc;"
+		],
+		"description": "[性能] tic/toc计时"
+	},
+	"Multi-section timing": {
+		"prefix": "mticmulti",
+		"body": [
+			"tic; $0 t1 = toc;",
+			"tic; $0 t2 = toc;",
+			"fprintf('Section 1: %.3fs\\n', t1);",
+			"fprintf('Section 2: %.3fs\\n', t2);"
+		],
+		"description": "[性能] 多段代码计时"
+	},
+	"Profile on/off": {
+		"prefix": "mprofile",
+		"body": [
+			"profile on;",
+			"$0",
+			"profile off;",
+			"profile viewer;"
+		],
+		"description": "[性能] 性能分析"
+	},
+	// ============================================
+	// 数值积分
+	// ============================================
+	"Numerical integral": {
+		"prefix": "mintegral",
+		"body": [
+			"${1:fun} = @(${2:x}) ${3:expression};",
+			"${4:q} = integral(${1:fun}, ${5:xmin}, ${6:xmax});"
+		],
+		"description": "[积分] 一维数值积分"
+	},
+	"2D Numerical integral": {
+		"prefix": "mintegral2",
+		"body": [
+			"${1:fun} = @(${2:x}, ${3:y}) ${4:expression};",
+			"${5:q} = integral2(${1:fun}, ${6:xmin}, ${7:xmax}, ${8:ymin}, ${9:ymax});"
+		],
+		"description": "[积分] 二维数值积分"
+	},
+	"Trapz integral": {
+		"prefix": "mtrapz",
+		"body": [
+			"${1:q} = trapz(${2:x}, ${3:y});"
+		],
+		"description": "[积分] 梯形积分"
+	},
+	// ============================================
+	// 优化与插值
+	// ============================================
+	"fminsearch optimization": {
+		"prefix": "mfmin",
+		"body": [
+			"${1:fun} = @(${2:x}) ${3:objective_function};",
+			"${4:x0} = [${5:initial_guess}];",
+			"[${6:x}, ${7:fval}] = fminsearch(${1:fun}, ${4:x0});"
+		],
+		"description": "[优化] fminsearch优化"
+	},
+	"1D Interpolation": {
+		"prefix": "minterp1",
+		"body": [
+			"${1:xq} = ${2:min}:${3:step}:${4:max};",
+			"${5:yq} = interp1(${6:x}, ${7:y}, ${1:xq}, '${8|linear,nearest,next,previous,spline,pchip,cubic|}');"
+		],
+		"description": "[优化] 一维插值"
+	},
+	"Spline interpolation": {
+		"prefix": "mspline",
+		"body": [
+			"${1:pp} = spline(${2:x}, ${3:y});",
+			"${4:yq} = ppval(${1:pp}, ${5:xq});"
+		],
+		"description": "[优化] 样条插值"
+	},
+	// ============================================
+	// 符号计算
+	// ============================================
+	"Symbolic variable": {
+		"prefix": "msym",
+		"body": [
+			"syms ${1:x} ${2:y} ${3:z}"
+		],
+		"description": "[符号] 符号变量定义"
+	},
+	"Symbolic differentiation": {
+		"prefix": "msymdiff",
+		"body": [
+			"syms ${1:x};",
+			"${2:f} = ${3:expression};",
+			"${4:dfdx} = diff(${2:f}, ${1:x});"
+		],
+		"description": "[符号] 符号求导"
+	},
+	"Symbolic integration": {
+		"prefix": "msymint",
+		"body": [
+			"syms ${1:x};",
+			"${2:f} = ${3:expression};",
+			"${4:F} = int(${2:f}, ${1:x});"
+		],
+		"description": "[符号] 符号积分"
+	},
+	"Symbolic equation solve": {
+		"prefix": "msymsolve",
+		"body": [
+			"syms ${1:x};",
+			"${2:eq} = ${3:equation} == ${4:rhs};",
+			"${5:sol} = solve(${2:eq}, ${1:x});"
+		],
+		"description": "[符号] 符号方程求解"
+	},
+	"Symbolic to function": {
+		"prefix": "mmatlabfun",
+		"body": [
+			"syms ${1:x};",
+			"${2:f} = ${3:expression};",
+			"${4:f_handle} = matlabFunction(${2:f});"
+		],
+		"description": "[符号] 符号表达式转函数句柄"
+	},
+	// ============================================
+	// 工具函数
+	// ============================================
+	"Reusable get_figure function": {
+		"prefix": "mfungetfig",
+		"body": [
+			"function f = get_figure(name)",
+			"%GET_FIGURE Get an existing named figure or create a new one.",
+			"%   F = GET_FIGURE(NAME) returns the figure handle for the figure",
+			"%   with name NAME. If no such figure exists, a new one is created.",
+			"f = findobj('Type', 'figure', 'Name', name);",
+			"if isempty(f)",
+			"    f = figure('Name', name, 'Color', 'w');",
+			"else",
+			"    figure(f);",
+			"end",
+			"end"
+		],
+		"description": "[工具] get_figure 工具函数"
+	}
+}
