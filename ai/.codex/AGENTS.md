@@ -71,8 +71,17 @@ Use the `grill` skill only within these boundaries:
 
 ## 4. Goal-Driven Execution and Verification
 
-- Define observable success criteria for multi-step or risky work. Keep a brief
-  plan with checks per step; skip ceremonial plans for trivial edits.
+- Scale planning depth with irreversibility, uncertainty, and blast radius, not
+  apparent task size. Act directly on trivial, local, reversible work. For
+  ordinary work, plan only to the next verifiable milestone and keep the
+  initial plan to 3-5 concrete steps.
+- Stop planning once the next action, success criterion, and validation method
+  are clear. Re-plan only when new evidence invalidates an assumption or the
+  current approach fails.
+- Treat every new module, interface, dependency, configuration option,
+  compatibility layer, and abstraction as a maintenance cost. Require a current
+  requirement, existing duplication, demonstrated failure mode, or concrete
+  test case; hypothetical future flexibility is insufficient.
 - Bug fix: reproduce then verify. Validation: test accepted and rejected input.
   Refactor: establish behavior and confirm preservation. Configuration: parse,
   lint, build, or exercise it. Documentation: verify commands, names, links,
@@ -90,23 +99,44 @@ Use the `grill` skill only within these boundaries:
 Choose the narrowest tool for the uncertainty:
 
 - Unknown location, behavior, or call chain: fast-context semantic search.
-- Exact identifier, string, or error: Grep. Known path: Read. Path pattern:
-  Glob. Existing file change: Edit.
+- Exact identifier, string, or error: `rg`. File or path discovery: `fd` or
+  `rg --files`. Known text file: `bat --plain --paging=never`. Existing file
+  change: `apply_patch`.
+- For local shell inspection, prefer installed Rust-native tools when they
+  preserve the needed behavior: `eza` over `ls`, `dust` over `du`, `procs` over
+  `ps`, `btm` over `top` for interactive monitoring, and `xh` over `curl` for
+  simple interactive HTTP requests.
+- Do not force a replacement when semantics differ. Include hidden or ignored
+  paths explicitly with `fd -H -I` or `rg --hidden --no-ignore`; use the
+  project-declared or platform command when portability, exact flags or output,
+  streaming or binary data, or an unsupported capability requires it.
 - For Obsidian operations, prefer the available CLI over MCP. Use MCP only
   when the CLI is unavailable, unsuitable, or lacks a required capability;
   briefly state the reason when switching to MCP.
+- On this Mac, never launch a GUI app for automation by executing its internal
+  `.app/Contents/MacOS/...` binary directly; this can abort during
+  LaunchServices registration and create repeated crash dialogs. For browser
+  rendering or screenshots, prefer the browser tools or a Playwright-managed
+  browser. If system Chrome is specifically required, launch it through
+  `open -n -a 'Google Chrome' --args ...` with an isolated temporary profile,
+  poll for the expected artifact instead of using `open -W`, and terminate only
+  the exact temporary-profile instance after verification.
 
 Use fast-context for genuine exploration, not as a mandatory preamble. Treat
 results as candidates: read source and surrounding callers, tests, and config
 before editing. Stop broad searching once evidence is sufficient. If the tool
-is unavailable or insufficient, continue with Glob, Grep, and Read. Detailed
-usage lives in `~/.config/myagents/skills/tools/fast-context/SKILL.md`.
+is unavailable or insufficient, continue with targeted `rg`/`fd` discovery and
+direct file reads. Detailed usage lives in
+`~/.config/myagents/skills/tools/fast-context/SKILL.md`.
 
 ## 6. Skills and Runtime
 
-- Read only relevant skills. Resolve curated `$skill` references through
-  `~/.config/myagents/skills/SKILLS_CATALOG.md`, read the entry, and apply only
-  relevant parts. Project-local instructions remain authoritative.
+- Read only relevant skills. Treat the active runtime's available-skills list as
+  authoritative for what can be invoked in the current turn. Use
+  `~/.config/myagents/skills/SKILLS_CATALOG.md` to locate and maintain curated
+  skills, not as proof of runtime availability. If a requested skill is
+  unavailable, say so and use the safest applicable fallback. Project-local
+  instructions remain authoritative.
 - Use each repository's declared environment and commands first.
 - For ad hoc local scripts with no project interpreter, prefer
   `/opt/homebrew/Caskroom/miniconda/base/envs/work/bin/python` when executable,
@@ -123,97 +153,38 @@ limiting cases. Repository conventions and tests remain authoritative.
 Mechanical edits that cannot alter numerical behavior do not require the full
 workflow.
 
-## 8. Model-Tiered Delegated Execution
+## 8. Delegated Execution
 
-This section applies to the root/main agent, never a spawned `plan_executor`.
+This section applies to the root/main agent, never a spawned executor.
 
-- A task is non-trivial if it changes three or more coupled project files;
-  affects a public interface, data format, security, permissions, migration, or
-  dependency; needs four or more steps; or requires design investigation. File
-  count alone is insufficient.
-- After the root resolves scope and choices, use the lightest execution lane
-  that fits. For lightweight, decision-complete work, delegate to one
-  `plan_executor` using `gpt-5.3-codex-spark`; the delegation prompt is the
-  execution contract and must give exact allowed files, edits, preserved
-  behavior, and verification commands. For non-trivial work, archive a plan,
-  pass the Luna-Ready gate, and delegate to one `plan_executor` using
-  `gpt-5.6-luna`.
-  Wait for the executor, review the diff, and independently verify either lane.
-  Conservative parallelism is the only exception.
-- Store plans at
-  `<project-root>/.codex/plans/YYYYMMDD-HHMMSS-<slug>.md` with status
-  `planning`, `ready`, `executing`, `completed`, or `blocked`. Do not commit
-  plans or change `.gitignore` unless explicitly required.
-- Every plan defines Goal, Success Criteria, Current Evidence, exact Allowed
-  Files, Preserved Behavior, Implementation Steps, Edge Cases and Failure
-  Behavior, Verification Commands, Risks and Assumptions, Luna-Ready Check, and
-  Execution Result.
-- Each step names its target, observable and preserved behavior, completion
-  criterion, and command. Eliminate choices; vague phrases are invalid unless
-  paired with a unique testable decision rule.
-- Set `luna_ready: true` and `ready` only when choices, scope, behavior, edge
-  and failure cases, verification, and stop conditions are explicit, with no
-  executor redesign or scope expansion needed.
-- Automatic execution requires reversible workspace-local edits, no dependency,
-  lockfile, migration, deletion, permission, auth, credential, external write,
-  commit, push, publish, or deploy action, no unresolved choice, and no user-work
-  overwrite.
-- A `plan_executor` edits only Allowed Files; it cannot edit its plan, redesign,
-  spawn agents, commit, push, publish, deploy, or expand scope. Contradictions,
-  required unlisted files, unplanned check failures, or security, data-loss, or
-  compatibility risks return `BLOCKED`.
-- The Spark lane does not require an archived plan, but it is limited to
-  reversible work with no public-interface, data-format, security, permission,
-  migration, dependency, deletion, or external-write impact and no remaining
-  implementation choice. If those limits do not hold, use the Luna lane.
-- Every Spark delegation must use a supported reasoning effort (`low` by
-  default; Spark does not support `none`) and explicitly set the reasoning
-  summary to `none` before the first model turn. If the Codex App
-  `create_thread` surface cannot set the summary independently of its parent,
-  use App Server `thread/start` followed by `turn/start` with
-  `model = "gpt-5.3-codex-spark"`, `effort = "low"`, and `summary = "none"`.
-  Verify that the turn completes with an agent message; otherwise return
-  `BLOCKED`.
-- The root may revise and redispatch once. A second failure is blocked. If the
-  required executor model is unavailable, stop instead of silently substituting
-  another model.
+- Execute directly by default. Delegate only when the user requests it or the
+  active runtime exposes a compatible executor and delegation materially helps.
+  Treat the runtime's current model and tool contract as authoritative; do not
+  invent unsupported model, reasoning, thread, or transport fallbacks.
+- Resolve material design choices before delegation. The execution contract must
+  state the exact allowed files, required changes, preserved behavior,
+  verification commands, and stop conditions. An executor cannot redesign,
+  expand scope, spawn agents, commit, push, publish, or deploy.
+- Use one executor by default. Parallel execution requires material time savings
+  and disjoint write sets with no ordering, shared generated files, lockfiles,
+  manifests, or mutable state.
+- The root reviews the resulting diff and independently runs the critical
+  verification. A delegated result is evidence, not automatic completion.
+- If the user explicitly requires an unavailable executor or model, stop and
+  report the mismatch. Otherwise continue directly when doing so is safe and
+  within scope.
+- Return `BLOCKED` only for a real unresolved authorization, design,
+  compatibility, security, or data-loss risk; executor unavailability alone is
+  not a blocker when direct execution remains safe.
 
-### Goal Integration
+For high-impact or cross-cutting work, persist only the next independently
+verifiable phase under the nearest project convention, or under
+`<project-root>/.codex/plans/` when no convention exists. A ready execution plan
+must contain Goal, Success Criteria, Current Evidence, exact Allowed Files,
+Preserved Behavior, Implementation Steps, Edge Cases and Failure Behavior,
+Verification Commands, Risks and Assumptions, and Execution Result. Do not commit
+plans or change `.gitignore` unless explicitly required.
 
-- Treat an active native Goal as the outer completion contract and each archived
-  plan or Spark execution contract as one bounded phase. After execution, the
-  root independently verifies evidence and records executor and root results.
-- If the Goal remains incomplete, create the next decision-complete phase; do
-  not expand completed plans. Complete a Goal only when evidence proves every
-  criterion. Blocked phases never count.
-- Follow the runtime's repeated-blocker rules before marking a Goal blocked;
-  stop for user input when authorization or a material user decision is needed.
-- Without an active Goal, execute one delegated phase and return control; do not
-  create a custom continuation loop.
-
-### Conservative Parallel Execution
-
-- Use one executor by default. Use two or three only for material time savings,
-  each with a Luna-ready plan, exact files, commands, provenance, and criteria.
-- Write sets must be disjoint, with no order or data dependency and no shared
-  manifest, lockfile, index, generated artifact, or mutable state. If ownership
-  is uncertain, run serially.
-- Executors cannot spawn agents. Wait for all, verify each, then verify
-  integration. Put shared-file work in a later serial plan. A blocked unit
-  leaves the phase and Goal incomplete.
-
-### Executor Provenance
-
-- Before delegation, record the planner thread's full ID and title. Luna plan
-  frontmatter records planner and executor IDs and titles; initialize executor
-  fields to `pending`, then replace them with the created thread's verified
-  values. For Spark execution, record the same provenance in the delegation
-  prompt because there is no archived plan.
-- Name the execution thread
-  `<specific task>｜<Spark执行|Luna执行>｜源:<planner short title>·<first 8 planner ID chars>`.
-  Put the actual change first; generic names are invalid.
-- Wait for discovery, set the title, and read it back for exact verification.
-  Retry registration failures at most three times; otherwise return `BLOCKED`.
-- The delegation prompt states planner title and full planner ID, plus the
-  absolute plan path for Luna or the complete execution contract for Spark.
-  User reporting includes both executor and planner titles and full IDs.
+Treat an active native Goal as the outer completion contract. Complete it only
+when evidence proves every criterion; a blocked or incomplete delegated phase
+does not count as completion.
