@@ -98,6 +98,9 @@ Bias toward correctness, scope control, and evidence without becoming inert.
 
 - Execute directly by default. Delegate only when requested or when available
   parallel execution materially helps the task.
+- Use the runtime's general worker with `gpt-5.6-luna` and `max` reasoning for
+  delegated implementation unless the user explicitly requests another
+  tradeoff.
 - Delegation does not expand authority or scope. Resolve material design choices
   first and give executors explicit allowed files, preserved behavior,
   verification, and stop conditions.
