@@ -91,8 +91,12 @@ Bias toward correctness, scope control, and evidence without becoming inert.
 - Use a repository's declared environment and commands before ad hoc tooling.
 - For substantive scientific or numerical work, apply the relevant scientific
   workflow and preserve units, conventions, shapes, precision, tolerances,
-  convergence, reproducibility, and evidence boundaries. Mechanical edits that
-  cannot affect scientific behavior do not require that workflow.
+  convergence, reproducibility, and evidence boundaries. For scientific
+  computing or numerical reproduction, validation must pair quantitative checks
+  with at least one problem-appropriate diagnostic visualization unless no
+  scientifically meaningful visualization exists; plots complement, never
+  replace, numerical assertions. Mechanical edits that cannot affect scientific
+  behavior do not require that workflow.
 
 ## 7. Delegation
 
