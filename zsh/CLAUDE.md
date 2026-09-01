@@ -10,9 +10,9 @@ Zsh 主配置，包含 Oh My Zsh 框架、Powerlevel10k 主题、别名、环境
 
 | 文件 | symlink 目标 | 用途 |
 |------|-------------|------|
-| `.zshrc` | `~/.zshrc` | 主入口：加载 OMZ、plugins、source 子文件 |
-| `.zprofile` | `~/.zprofile` | 登录 shell 环境：Homebrew PATH、conda init |
-| `.zshenv` | `~/.zshenv` | 所有 shell 通用变量（最早加载） |
+| `.zshrc` | `~/.zshrc` | 主入口：加载 OMZ、p10k、plugins、source 子文件、conda init、Kaku 集成与 vi 重绑 |
+| `.zprofile` | `~/.zprofile` | 登录 shell 环境：Homebrew shellenv、OrbStack、Julia depot |
+| `.zshenv` | `~/.zshenv` | 所有 shell 通用（最早加载）：PATH 去重/定向清理、`path_prepend`、cargo/goup |
 | `.zshrc.aliases` | `~/.zshrc.aliases` | 别名定义，由 `.zshrc` source |
 | `.zshrc.env` | `~/.zshrc.env` | 工具环境变量（由 `.zshrc` source） |
 | `.p10k.zsh` | `~/.p10k.zsh` | Powerlevel10k 主题配置（`p10k configure` 生成） |
@@ -21,12 +21,25 @@ Zsh 主配置，包含 Oh My Zsh 框架、Powerlevel10k 主题、别名、环境
 
 - **插件管理器**：Oh My Zsh（`~/.oh-my-zsh`，不在仓库中）
 - **主题**：Powerlevel10k（`ZSH_THEME="powerlevel10k/powerlevel10k"`）
-- **加载顺序**：`.zshenv` → `.zprofile`（登录）→ `.zshrc`（交互）→ source `.zshrc.env`、`.zshrc.aliases`
+- **加载顺序**：`.zshenv` → `.zprofile`（登录）→ `.zshrc`（交互）→ env/aliases → OMZ/p10k → zoxide → Kaku → vi 重绑
+
+## 不变量（改动前必读）
+
+- **PATH 一律用 `path_prepend`**（定义在 `.zshenv`）。它自带目录存在性检查，配合 `typeset -U path` 去重；已确认属于 dotfiles 的旧条目由 `path_remove` 定向清理。
+  直接写 `export PATH="...:$PATH"` 会导致 PATH 随 shell 嵌套无限增长。
+- **dotfiles 管理的 PATH 条目只允许有一个来源**。`.claude/bin` 由 `.zshenv` 负责；Kaku bin 由 `.zshrc` 的集成段负责。外部 Kaku 脚本可能再次去重前置同一路径。
+- **`kaku.zsh` 必须在 `.zshrc` 的 p10k 与 zoxide 之后加载，vi 重绑必须在它之后**。它通过检测 `__zoxide_z` / `_zsh_autosuggest_start` /
+  `_main_complete` 来自我禁用 zsh-z、autosuggestions、compinit。提前 source 会导致这些守卫失效，
+  从而重复加载插件、compinit 跑两次，并让 zsh-z 的 `z` 覆盖 zoxide。
+- **`SAVEHIST` 必须写在 `source $ZSH/oh-my-zsh.sh` 之后**，否则被 OMZ 的默认值 10000 覆盖。
+- **自定义补全的 `fpath` 必须写在 `oh-my-zsh.sh` 之前**，否则 compinit 已跑完，补全不生效。
+- **目录跳转由 zoxide 提供**：`cd`（frecency）与 `cdi`（交互）。不要再加 `z`/`zi` 别名 ——
+  `zoxide query` 只打印路径不跳转。
 
 ## 依赖
 
 - 工具：`zsh`、`oh-my-zsh`、`powerlevel10k`
-- 外部：`conda`（zprofile init）、`homebrew`（/opt/homebrew/bin）
+- 外部：`conda`（`.zshrc` 内 init）、`homebrew`（/opt/homebrew/bin）、`kaku`（`~/.config/kaku`）
 
 ## 修改指南
 

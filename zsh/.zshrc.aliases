@@ -1,7 +1,7 @@
 # Core aliases
 alias ls="eza --icons --time-style +%Y-%m-%d\ %H:%M:%S"
 alias lg="lazygit"
-alias tree="ls -T"
+alias tree="eza -T"
 alias pwc="pwd | pbcopy"
 alias ff="fastfetch"
 alias vi="vim"
@@ -9,15 +9,28 @@ alias br="brew"
 alias m-cli="matlab -nodesktop"
 
 # Navigation and config
-alias z="zoxide query --exclude ~ --"
-alias zi="zoxide query -i"
+# `z`/`zi` were dead: with `zoxide init --cmd cd`, `zoxide query` only prints a
+# path instead of jumping. Use `cd` (frecency) and `cdi` (interactive) instead.
 alias zshconfig="vi ~/.zshrc"
 alias vimconfig="vi ~/.vimrc"
 alias sshconfig="vi ~/.ssh/config"
 
 # Maintenance
 alias brup="brew update && brew upgrade && brew cleanup"
-alias wrs="pgrep WindowServer | xargs sudo kill -9"
+# Force-restarting WindowServer tears down the whole GUI session and loses all
+# unsaved work, so it must never be one keystroke away. Defined as a function
+# (not an alias) to allow the confirmation prompt.
+wrs() {
+	print -u2 "WARNING: this force-kills WindowServer, logging you out immediately."
+	print -u2 "All unsaved work in every application will be lost."
+	local reply
+	read -r "reply?Type 'yes' to continue: "
+	if [[ "$reply" != "yes" ]]; then
+		print -u2 "Aborted."
+		return 1
+	fi
+	pgrep WindowServer | xargs sudo kill -9
+}
 alias prxon="sudo networksetup -setsocksfirewallproxystate Wi-Fi on"
 alias prxof="sudo networksetup -setsocksfirewallproxystate Wi-Fi off"
 

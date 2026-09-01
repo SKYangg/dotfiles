@@ -24,7 +24,6 @@ plugins=(
 	# Shell tools
 	tmux
 	web-search
-	thefuck
 	command-not-found
 
 	# Dev environments
@@ -38,7 +37,15 @@ plugins=(
 	zsh-syntax-highlighting
 )
 
+# Custom completions must join fpath before compinit runs inside oh-my-zsh.sh,
+# otherwise they are never loaded (~/.zsh/completions/_opencli was dead).
+fpath=("$HOME/.zsh/completions" $fpath)
+
 source "$ZSH/oh-my-zsh.sh"
+
+# Set after oh-my-zsh.sh or OMZ's default (10000) wins. HISTSIZE is 50000, so
+# the old mismatch discarded 80% of history on exit.
+SAVEHIST=50000
 [ -f "$HOME/.zshrc.aliases" ] && source "$HOME/.zshrc.aliases"
 
 # Named directories
@@ -76,18 +83,38 @@ function y() {
 	fi
 	rm -f -- "$tmp"
 }
-HISTFILE=~/.zsh_history
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Added by myclaude installer
-export PATH="$HOME/.claude/bin:$PATH"
+# Kaku is managed outside this repository. It initializes Starship only when
+# TERM_PROGRAM=Kaku, so keep p10k authoritative by hiding only Starship's
+# directory while sourcing Kaku; the rest of Kaku's integrations remain active.
+if [[ -f "$HOME/.config/kaku/zsh/kaku.zsh" ]]; then
+	if [[ "${TERM_PROGRAM:-}" == "Kaku" && -n "${commands[starship]:-}" ]]; then
+		typeset -a _dotfiles_saved_path
+		typeset _dotfiles_starship_path _dotfiles_starship_dir _dotfiles_path_entry
+		_dotfiles_starship_path="${commands[starship]}"
+		_dotfiles_starship_dir="${_dotfiles_starship_path:h}"
+		_dotfiles_saved_path=("${path[@]}")
+		path=()
+		for _dotfiles_path_entry in "${_dotfiles_saved_path[@]}"; do
+			[[ "$_dotfiles_path_entry" != "$_dotfiles_starship_dir" ]] && path+=("$_dotfiles_path_entry")
+		done
+		rehash
+		source "$HOME/.config/kaku/zsh/kaku.zsh"
+		path=("${_dotfiles_saved_path[@]}")
+		rehash
+		unset _dotfiles_saved_path _dotfiles_starship_path _dotfiles_starship_dir _dotfiles_path_entry
+	else
+		source "$HOME/.config/kaku/zsh/kaku.zsh"
+	fi
+fi
+[[ -d "$HOME/.config/kaku/zsh/bin" ]] && path_prepend "$HOME/.config/kaku/zsh/bin"
 
-[[ ":$PATH:" != *":$HOME/.config/kaku/zsh/bin:"* ]] && export PATH="$HOME/.config/kaku/zsh/bin:$PATH" # Kaku PATH Integration
-[[ -f "$HOME/.config/kaku/zsh/kaku.zsh" ]] && source "$HOME/.config/kaku/zsh/kaku.zsh" # Kaku Shell Integration
-
-
+# Kaku calls bindkey -e; restore the selected vi mode after its integration.
+KEYTIMEOUT=1
+bindkey -v
 bindkey -M emacs '^R' atuin-search
 bindkey -M viins '^R' atuin-search-viins
 bindkey -M vicmd '^R' atuin-search-vicmd
