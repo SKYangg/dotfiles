@@ -4,7 +4,7 @@
 
 ## 仓库概述
 
-本仓库以 **包目录（package-style）** 管理 `/Users/skyang` 下的个人配置文件，每个顶层目录对应一个工具域，通过 `scripts/bootstrap.sh` 将文件以符号链接形式还原到 `$HOME` 对应路径。敏感文件（含密钥、token、内网地址）**不纳管**，改以 `.example` 模板保留在仓库中，需在新机器上手动实例化。
+本仓库以 **包目录（package-style）** 管理 `$HOME` 下的个人配置文件，每个顶层目录对应一个工具域，通过 `scripts/bootstrap.sh` 将文件以符号链接形式还原到 `$HOME` 对应路径。敏感文件（含密钥、token、内网地址）**不纳管**，改以 `.example` 模板保留在仓库中，需在新机器上手动实例化。
 
 ## 模块导航
 
@@ -29,8 +29,8 @@
 
 ```mermaid
 graph TD
-  ROOT["dotfiles repo\n/Users/skyang/dotfiles"]
-  HOME["$HOME\n/Users/skyang"]
+  ROOT["dotfiles repo\n<repo-root>"]
+  HOME["$HOME"]
 
   ROOT --> |bootstrap.sh 符号链接| HOME
 
@@ -92,11 +92,12 @@ brew bundle --file cli/.config/brewfile/Brewfile
 ./scripts/bootstrap.sh --home /tmp/dotfiles-test-home
 
 # 手动重建单个 symlink
-ln -sf /Users/skyang/dotfiles/zsh/.zshrc ~/.zshrc
+DOTFILES_ROOT="$HOME/dotfiles"
+ln -sf "$DOTFILES_ROOT/zsh/.zshrc" ~/.zshrc
 
 # 从备份恢复
 rm ~/.zshrc
-cp ~/.dotfiles-backup-20260328-233031/.zshrc ~/.zshrc
+cp ~/.dotfiles-backup-<timestamp>/.zshrc ~/.zshrc
 ```
 
 ## AI 协作提示

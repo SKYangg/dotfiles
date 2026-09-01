@@ -1,4 +1,5 @@
 myagents
+/.codex/
 .DS_Store
 *.log
 *.sqlite
@@ -17,3 +18,12 @@ myagents
 **/id_*
 **/*.pem
 **/*.key
+**/.env
+**/.env.*
+!**/.env.example
+**/credentials*.json
+**/token*.json
+**/secrets*
+**/*.p12
+**/*.pfx
+editor/.vscode/extensions/extensions.json

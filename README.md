@@ -1,7 +1,7 @@
 # Dotfiles
 
-This repository stores the configs under `/Users/skyang/dotfiles` and uses
-package-style directories so they can be linked back into `/Users/skyang`.
+This repository stores the configs under the repository root and uses
+package-style directories so they can be linked back into `$HOME`.
 
 ## Current Layout
 
@@ -16,7 +16,7 @@ package-style directories so they can be linked back into `/Users/skyang`.
 
 The repository is the source of truth for migrated configs.
 
-Managed files are linked back to their original paths in `/Users/skyang`, for
+Managed files are linked back to their original paths under `$HOME`, for
 example:
 
 - `zsh/.zshrc` -> `~/.zshrc`
@@ -59,13 +59,7 @@ backup directory under:
 ~/.dotfiles-backup-YYYYMMDD-HHMMSS/
 ```
 
-The backup created during the current migration is:
-
-```text
-/Users/skyang/.dotfiles-backup-20260328-233031
-```
-
-Do not delete that backup until the linked setup has been stable for a while.
+Do not delete a backup until the linked setup has been stable for a while.
 
 ## New Machine Restore
 
@@ -99,12 +93,12 @@ What it does not do:
 After running it on a new machine, review and materialize the local-only
 templates you actually need:
 
-- [`git/.gitconfig`](/Users/skyang/dotfiles/git/.gitconfig)
-- [`ssh/.ssh/config.example`](/Users/skyang/dotfiles/ssh/.ssh/config.example)
-- [`ai/.claude/settings.json.example`](/Users/skyang/dotfiles/ai/.claude/settings.json.example)
-- [`ai/.claude/.ccg/config.toml.example`](/Users/skyang/dotfiles/ai/.claude/.ccg/config.toml.example)
-- [`ai/.codex/config.toml.example`](/Users/skyang/dotfiles/ai/.codex/config.toml.example)
-- [`cli/.config/kaku/assistant.toml.example`](/Users/skyang/dotfiles/cli/.config/kaku/assistant.toml.example)
+- [`git/.gitconfig`](git/.gitconfig)
+- [`ssh/.ssh/config.example`](ssh/.ssh/config.example)
+- [`ai/.claude/settings.json.example`](ai/.claude/settings.json.example)
+- [`ai/.claude/.ccg/config.toml.example`](ai/.claude/.ccg/config.toml.example)
+- [`ai/.codex/config.toml.example`](ai/.codex/config.toml.example)
+- [`cli/.config/kaku/assistant.toml.example`](cli/.config/kaku/assistant.toml.example)
 
 Then install packages separately if needed:
 
@@ -126,11 +120,10 @@ If you use a different compatible editor CLI, point the script at it:
 ```
 
 The manifest lives at
-[`editor/.vscode/extensions/extensions.list`](/Users/skyang/dotfiles/editor/.vscode/extensions/extensions.list).
-The legacy runtime snapshot
-[`editor/.vscode/extensions/extensions.json`](/Users/skyang/dotfiles/editor/.vscode/extensions/extensions.json)
-is kept only for current-machine compatibility and is not linked by
-`bootstrap.sh` on new machines.
+[`editor/.vscode/extensions/extensions.list`](editor/.vscode/extensions/extensions.list).
+The legacy runtime snapshot `editor/.vscode/extensions/extensions.json` is
+intentionally excluded from this public repository and remains local-only.
+It is not linked by `bootstrap.sh` on new machines.
 
 ## Re-linking
 
@@ -140,15 +133,16 @@ from the repo instead of editing the home-directory copy by hand.
 Example:
 
 ```bash
+DOTFILES_ROOT="$HOME/dotfiles"
 mv ~/.zshrc ~/.dotfiles-backup-manual/.zshrc
-ln -s /Users/skyang/dotfiles/zsh/.zshrc ~/.zshrc
+ln -s "$DOTFILES_ROOT/zsh/.zshrc" ~/.zshrc
 ```
 
 For nested config paths, create the parent directory first if needed:
 
 ```bash
 mkdir -p ~/.config/ghostty
-ln -s /Users/skyang/dotfiles/terminal/.config/ghostty/config ~/.config/ghostty/config
+ln -s "$DOTFILES_ROOT/terminal/.config/ghostty/config" ~/.config/ghostty/config
 ```
 
 ## Restore Rule
@@ -157,7 +151,7 @@ If a linked config causes issues, remove the symlink and restore the backup:
 
 ```bash
 rm ~/.zshrc
-cp /Users/skyang/.dotfiles-backup-20260328-233031/.zshrc ~/.zshrc
+cp ~/.dotfiles-backup-<timestamp>/.zshrc ~/.zshrc
 ```
 
 For sensitive files, keep using the local real file unless you explicitly
