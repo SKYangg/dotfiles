@@ -612,7 +612,7 @@
   # Available sources:
   #
   # - shell   `asdf current` says "set by ASDF_${TOOL}_VERSION environment variable"
-  # - local   `asdf current` says "set by /some/not/home/directory/file"
+  # - local   `asdf current` says "set by $HOME/.tool-versions"
   # - global  `asdf current` says "set by $HOME/file"
   #
   # Note: If this parameter is set to (shell local global), it won't hide tools.
