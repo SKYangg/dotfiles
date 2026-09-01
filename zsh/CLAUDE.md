@@ -10,7 +10,7 @@ Zsh 主配置，包含 Oh My Zsh 框架、Powerlevel10k 主题、别名、环境
 
 | 文件 | symlink 目标 | 用途 |
 |------|-------------|------|
-| `.zshrc` | `~/.zshrc` | 主入口：加载 OMZ、p10k、plugins、source 子文件、conda init、Kaku 集成与 vi 重绑 |
+| `.zshrc` | `~/.zshrc` | 主入口：加载 OMZ、p10k、plugins、source 子文件、按需初始化 NVM/Conda、Kaku 集成与 vi 重绑 |
 | `.zprofile` | `~/.zprofile` | 登录 shell 环境：Homebrew shellenv、OrbStack、Julia depot |
 | `.zshenv` | `~/.zshenv` | 所有 shell 通用（最早加载）：PATH 去重/定向清理、`path_prepend`、cargo/goup |
 | `.zshrc.aliases` | `~/.zshrc.aliases` | 别名定义，由 `.zshrc` source |
@@ -21,7 +21,7 @@ Zsh 主配置，包含 Oh My Zsh 框架、Powerlevel10k 主题、别名、环境
 
 - **插件管理器**：Oh My Zsh（`~/.oh-my-zsh`，不在仓库中）
 - **主题**：Powerlevel10k（`ZSH_THEME="powerlevel10k/powerlevel10k"`）
-- **加载顺序**：`.zshenv` → `.zprofile`（登录）→ `.zshrc`（交互）→ env/aliases → OMZ/p10k → zoxide → Kaku → vi 重绑
+- **加载顺序**：`.zshenv` → `.zprofile`（登录）→ `.zshrc`（交互）→ env/aliases → OMZ/p10k → Conda/NVM 按需加载器 → zoxide → Kaku → vi 重绑
 
 ## 不变量（改动前必读）
 
@@ -35,6 +35,7 @@ Zsh 主配置，包含 Oh My Zsh 框架、Powerlevel10k 主题、别名、环境
 - **自定义补全的 `fpath` 必须写在 `oh-my-zsh.sh` 之前**，否则 compinit 已跑完，补全不生效。
 - **目录跳转由 zoxide 提供**：`cd`（frecency）与 `cdi`（交互）。不要再加 `z`/`zi` 别名 ——
   `zoxide query` 只打印路径不跳转。
+- **NVM/Conda 默认按需初始化**：不要把 `nvm.sh` 或 `conda shell.zsh hook` 恢复到启动路径；首次 `node`、`npm`、`npx`、`nvm` 或 `conda activate` 必须仍能完成初始化。
 
 ## 依赖
 

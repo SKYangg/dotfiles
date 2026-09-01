@@ -52,18 +52,28 @@ SAVEHIST=50000
 hash -d iC=~/Library/Mobile\ Documents/com~apple~CloudDocs
 
 # Conda
-# Contents in this block are managed by `conda init`.
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-	eval "$__conda_setup"
-else
-	if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-		. "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-	else
-		export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+# This installation does not auto-activate an environment, so defer its shell
+# hook until `conda` or one of the conda aliases is first used.
+typeset -g _DOTFILES_CONDA_LOADED=0
+_dotfiles_conda_load() {
+	(( _DOTFILES_CONDA_LOADED )) && return 0
+
+	local conda_exe="/opt/homebrew/Caskroom/miniconda/base/bin/conda"
+	if [[ ! -x "$conda_exe" ]]; then
+		print -u2 "Conda executable not found: $conda_exe"
+		return 127
 	fi
-fi
-unset __conda_setup
+
+	local conda_hook
+	conda_hook="$("$conda_exe" shell.zsh hook 2>/dev/null)" || return 1
+	[[ -n "$conda_hook" ]] || return 1
+	eval "$conda_hook" || return 1
+	_DOTFILES_CONDA_LOADED=1
+}
+conda() {
+	_dotfiles_conda_load || return
+	conda "$@"
+}
 
 # Shell tools
 bindkey -v
@@ -71,8 +81,38 @@ eval "$(zoxide init zsh --cmd cd)"
 eval "$(atuin init zsh)"
 
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+
+# NVM is expensive to source and does not need to be present for every shell.
+# Load it on the first nvm/node/npm invocation, including its completion only
+# after NVM itself is available.
+typeset -g _DOTFILES_NVM_LOADED=0
+_dotfiles_nvm_load() {
+	(( _DOTFILES_NVM_LOADED )) && return 0
+	if [[ ! -s "$NVM_DIR/nvm.sh" ]]; then
+		print -u2 "NVM not found: $NVM_DIR/nvm.sh"
+		return 127
+	fi
+
+	. "$NVM_DIR/nvm.sh" || return
+	[[ ! -s "$NVM_DIR/bash_completion" ]] || . "$NVM_DIR/bash_completion" || return
+	_DOTFILES_NVM_LOADED=1
+}
+nvm() {
+	_dotfiles_nvm_load || return
+	nvm "$@"
+}
+_dotfiles_nvm_lazy_command() {
+	local command_name="$1"
+	shift
+	_dotfiles_nvm_load || return
+	command "$command_name" "$@"
+}
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+	node() { _dotfiles_nvm_lazy_command node "$@"; }
+	npm() { _dotfiles_nvm_lazy_command npm "$@"; }
+	npx() { _dotfiles_nvm_lazy_command npx "$@"; }
+	corepack() { _dotfiles_nvm_lazy_command corepack "$@"; }
+fi
 
 function y() {
 	local tmp cwd
