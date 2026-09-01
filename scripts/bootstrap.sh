@@ -75,6 +75,19 @@ should_skip_source() {
       return 0
     fi
   done
+  # macOS Finder state. Already gitignored, but can exist in a working tree.
+  if [[ "$(basename -- "${rel}")" == ".DS_Store" ]]; then
+    return 0
+  fi
+  # A package's own top-level documentation, e.g. "zsh/CLAUDE.md". Most packages
+  # have one, so they all map to the single target ~/CLAUDE.md and overwrite each
+  # other; whichever package came last in MANAGED_PACKAGES won, which also made
+  # repeated runs non-idempotent. The genuinely managed global rules file is
+  # ai/.claude/CLAUDE.md -> ~/.claude/CLAUDE.md; it has one more path component
+  # and is therefore not matched here.
+  if [[ "${rel}" == */CLAUDE.md ]] && [[ "${rel}" != */*/CLAUDE.md ]]; then
+    return 0
+  fi
   return 1
 }
 
@@ -133,6 +146,22 @@ for pkg in "${MANAGED_PACKAGES[@]}"; do
     if [[ -L "${target}" ]] && [[ "$(readlink "${target}")" == "${source}" ]]; then
       skipped=$((skipped + 1))
       continue
+    fi
+
+    # An ancestor directory may already be a symlink into this repository, for
+    # example ~/.config/yazi/plugins -> <repo>/cli/.config/yazi/plugins. Because
+    # this loop walks individual files, ${target} would then resolve back to
+    # ${source} itself, and the code below would move the repository's own file
+    # into the backup directory and replace it with a symlink pointing at
+    # itself, destroying the content. Detect that case and leave it alone: the
+    # file is already managed through the ancestor link.
+    if [[ -d "${parent_dir}" ]]; then
+      resolved_parent="$(cd "${parent_dir}" 2>/dev/null && pwd -P)"
+      if [[ -n "${resolved_parent}" ]] &&
+        [[ "${resolved_parent}/$(basename -- "${target}")" == "${source}" ]]; then
+        skipped=$((skipped + 1))
+        continue
+      fi
     fi
 
     run_cmd mkdir -p "${parent_dir}"
