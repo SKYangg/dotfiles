@@ -18,7 +18,7 @@
 | ai | `ai/` | Claude Code (CCG)、Codex 配置模板与上下文规则 |
 | terminal | `terminal/` | Ghostty 终端、Starship 提示符、Warp |
 | cli | `cli/` | Homebrew Brewfile、yazi、atuin、btop、neofetch、uv、conda、npm |
-| fish | `fish/` | Fish shell 颜色与 Starship 集成 |
+| fish | `fish/` | Fish shell 配置：conf.d 模块化（PATH/环境变量/键位/工具/别名/颜色）、Starship 提示符、与 zsh 行为对齐 |
 | editor | `editor/` | VS Code / Cursor / Zed 配置、可移植扩展清单 |
 | aerospace | `aerospace/` | macOS 平铺窗口管理器（AeroSpace） |
 | docker | `docker/` | Docker daemon 配置 |

@@ -16,6 +16,16 @@ package-style directories so they can be linked back into `/Users/skyang`.
 
 The repository is the source of truth for migrated configs.
 
+`bootstrap.sh` links individual files, and skips two categories:
+
+- Each package's own top-level `CLAUDE.md`, since every one of them would
+  otherwise map to the single target `~/CLAUDE.md` and overwrite the others.
+  The managed global rules file `ai/.claude/CLAUDE.md` is nested and still
+  linked.
+- Files reached through a directory that is already a symlink into this
+  repository, such as `~/.config/yazi/plugins`. Linking those would replace the
+  repository's own file with a symlink to itself.
+
 Managed files are linked back to their original paths in `/Users/skyang`, for
 example:
 
@@ -26,6 +36,37 @@ example:
 
 This is intentional. If a config has been migrated, edit the file in this
 repository, not the path under `$HOME`.
+
+## Shells
+
+Zsh is the login shell; fish is configured to match it so switching between
+them does not change behaviour.
+
+`fish/.config/fish/conf.d/` is loaded in alphabetical order before
+`config.fish`:
+
+| File | Purpose |
+|------|---------|
+| `00-path.fish` | `brew shellenv`, PATH construction and pruning |
+| `10-env.fish` | exported environment variables, node version from nvm's default |
+| `15-keybindings.fish` | vi mode (before `20-tools` so tool bindings survive) |
+| `20-tools.fish` | zoxide, atuin, fzf, conda |
+| `30-aliases.fish` | aliases |
+| `40-colors.fish` | syntax highlighting and pager colours |
+
+Autoloaded functions live in `fish/.config/fish/functions/` (`y`, `wrs`).
+
+Fish needs `brew shellenv` of its own because Homebrew is not in `/etc/paths`
+on this machine and `~/.zprofile` is zsh-only. Kaku, Powerlevel10k and nvm's
+shell function are zsh-only by design; fish uses Starship and resolves nvm's
+`default` alias to a PATH entry instead.
+
+To make fish selectable as a login shell:
+
+```bash
+sudo sh -c 'echo /opt/homebrew/bin/fish >> /etc/shells'
+chsh -s /opt/homebrew/bin/fish
+```
 
 ## Sensitive Files
 
