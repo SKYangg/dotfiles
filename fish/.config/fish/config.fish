@@ -1,37 +1,21 @@
-set --erase --universal fish_key_bindings
-
-# Fish 4.3+ no longer stores color variables in universal scope by default.
-# Keep the migrated colors here so new sessions get consistent highlighting.
-set --global fish_color_autosuggestion brblack
-set --global fish_color_cancel -r
-set --global fish_color_command normal
-set --global fish_color_comment red
-set --global fish_color_cwd green
-set --global fish_color_cwd_root red
-set --global fish_color_end green
-set --global fish_color_error brred
-set --global fish_color_escape brcyan
-set --global fish_color_history_current --bold
-set --global fish_color_host normal
-set --global fish_color_host_remote yellow
-set --global fish_color_normal normal
-set --global fish_color_operator brcyan
-set --global fish_color_param cyan
-set --global fish_color_quote yellow
-set --global fish_color_redirection cyan --bold
-set --global fish_color_search_match white --background=brblack
-set --global fish_color_selection white --bold --background=brblack
-set --global fish_color_status red
-set --global fish_color_user brgreen
-set --global fish_color_valid_path --underline
-set --global fish_pager_color_completion normal
-set --global fish_pager_color_description yellow -i
-set --global fish_pager_color_prefix normal --bold --underline
-set --global fish_pager_color_progress brwhite --background=cyan
-set --global fish_pager_color_selected_background -r
+# Fish entry point.
+#
+# Configuration is split into ~/.config/fish/conf.d/, which fish sources in
+# alphabetical order before this file:
+#
+#   00-path.fish         brew shellenv, PATH construction and pruning
+#   10-env.fish          exported environment variables
+#   15-keybindings.fish  vi mode (before 20-tools so tool bindings survive)
+#   20-tools.fish        zoxide, atuin, fzf, conda
+#   30-aliases.fish      aliases
+#   40-colors.fish       syntax highlighting and pager colours
+#
+# Autoloaded functions live in ~/.config/fish/functions/ (`y`, `wrs`).
 
 if status is-interactive
-    # Commands to run in interactive sessions can go here
+    # Prompt. `| source` replaces the older `| .`; the `.` builtin is a
+    # deprecated alias for `source` and emits a warning on modern fish.
+    if command -q starship
+        starship init fish | source
+    end
 end
-
-starship init fish | .
