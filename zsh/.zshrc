@@ -112,6 +112,13 @@ if [[ -s "$NVM_DIR/nvm.sh" ]]; then
 	npm() { _dotfiles_nvm_lazy_command npm "$@"; }
 	npx() { _dotfiles_nvm_lazy_command npx "$@"; }
 	corepack() { _dotfiles_nvm_lazy_command corepack "$@"; }
+	pi() {
+		if [[ -n "$NVM_BIN" && -x "$NVM_BIN/pi" ]]; then
+			"$NVM_BIN/pi" "$@"
+		else
+			_dotfiles_nvm_lazy_command pi "$@"
+		fi
+	}
 fi
 
 function y() {

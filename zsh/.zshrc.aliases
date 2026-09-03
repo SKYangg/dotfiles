@@ -5,6 +5,7 @@ alias tree="eza -T"
 alias pwc="pwd | pbcopy"
 alias ff="fastfetch"
 alias vi="vim"
+alias svi='sudo -e'
 alias br="brew"
 alias m-cli="matlab -nodesktop"
 
