@@ -1,0 +1,81 @@
+#:schema https://yazi-rs.github.io/schemas/keymap.json
+
+# Open the hovered directory or file with one key.
+[[mgr.prepend_keymap]]
+on = "l"
+run = "plugin smart-enter"
+desc = "Enter the directory, or open the file"
+
+# Interactive ripgrep/fzf content search; results open in Vim at the match.
+[[mgr.prepend_keymap]]
+on = [ "F", "G" ]
+run = "plugin yafg"
+desc = "Search file contents"
+
+# macOS quick locations; prepend_keymap preserves all built-in keybindings.
+[[mgr.prepend_keymap]]
+on = [ "g", "D" ]
+run = "cd ~/Desktop"
+desc = "Go to ~/Desktop"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "o" ]
+run = "cd ~/Documents"
+desc = "Go to ~/Documents"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "p" ]
+run = "cd ~/Pictures"
+desc = "Go to ~/Pictures"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "m" ]
+run = "cd ~/Movies"
+desc = "Go to ~/Movies"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "u" ]
+run = "cd ~/Music"
+desc = "Go to ~/Music"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "w" ]
+run = "cd ~/Workspace"
+desc = "Go to ~/Workspace"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "i" ]
+run = "cd '~/Library/Mobile Documents/com~apple~CloudDocs'"
+desc = "Go to iCloud Drive"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "C" ]
+run = "cd ~/Library/CloudStorage"
+desc = "Go to Cloud Storage"
+for = "macos"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "v" ]
+run = "cd /Volumes"
+desc = "Go to /Volumes"
+for = "macos"
+
+# DuckDB actions use uppercase suffixes because g-o/g-u are already used by
+# the macOS Documents/Music shortcuts above. The `--` is required by Yazi 26.x
+# so plugin arguments beginning with a hyphen reach duckdb.yazi unchanged.
+[[mgr.prepend_keymap]]
+on = [ "g", "O" ]
+run = "plugin duckdb -- -open"
+desc = "Open with DuckDB"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "U" ]
+run = "plugin duckdb -- -ui"
+desc = "Open with DuckDB UI"

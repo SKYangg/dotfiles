@@ -9,8 +9,7 @@ linemode = "mtime"
 show_hidden = false
 show_symlink = true
 scrolloff = 5
-mouse_events = ["click", "scroll"]
-title_format = "Yazi: {cwd}"
+mouse_events = ["click", "scroll", "drag"]
 
 [preview]
 wrap = "yes"
@@ -19,137 +18,144 @@ max_width = 6000
 max_height = 9000
 cache_dir = ""
 image_delay = 30
-# image_method    = "ueberzug"
 image_filter = "lanczos3"
-image_protocol = "kitty"
 image_quality = 75
 ueberzug_scale = 1
 ueberzug_offset = [0, 0, 0, 0]
 
 [opener]
 edit = [
-{ run = '${EDITOR:-vi} "$@"', desc = "$EDITOR", block = true, for = "unix" },
-{ run = 'code %*', orphan = true, desc = "code", for = "windows" },
-{ run = 'code -w %*', block = true, desc = "code (block)", for = "windows" },
+{ run = "vim %s", desc = "Vim", block = true, for = "unix" },
 ]
 open = [
-{ run = 'xdg-open "$1"', desc = "Open", for = "linux" },
-{ run = 'open "$@"', desc = "Open", for = "macos" },
-{ run = 'start "" "%1"', orphan = true, desc = "Open", for = "windows" },
-{ run = 'termux-open "$1"', desc = "Open", for = "android" },
+{ run = "open %s", desc = "Open", orphan = true, for = "macos" },
 ]
-reveal = [
-{ run = 'xdg-open "$(dirname "$1")"', desc = "Reveal", for = "linux" },
-{ run = 'open -R "$1"', desc = "Reveal", for = "macos" },
-{ run = 'explorer /select,"%1"', orphan = true, desc = "Reveal", for = "windows" },
-{ run = 'termux-open "$(dirname "$1")"', desc = "Reveal", for = "android" },
-{ run = '''clear; exiftool "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show EXIF", for = "unix" },
-]
-extract = [
-{ run = 'ya pub extract --list "$@"', desc = "Extract here", for = "unix" },
-{ run = 'ya pub extract --list %*', desc = "Extract here", for = "windows" },
-]
-play = [
-{ run = 'xdg-open "$1"', desc = "Play", for = "linux" },
-{ run = 'open "$@"', desc = "Play", for = "macos" },
-{ run = 'start "" "%1"', orphan = true, desc = "Play", for = "windows" },
-{ run = 'termux-open "$1"', desc = "Play", for = "android" },
-{ run = '''mediainfo "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show media info", for = "unix" },
-{ run = 'mediainfo "%1" & pause', block = true, desc = "Show media info", for = "windows" },
-]
-keynote = [{ run = 'open -a Keynote "$@"', desc = "Keynote", for = "macos" }]
-pages = [{ run = 'open -a Pages "$@"', desc = "Pages", for = "macos" }]
-numbers = [{ run = 'open -a Numbers "$@"', desc = "Numbers", for = "macos" }]
 
 [open]
-rules = [
-# Folder
-{ url = "*/", use = [
-	"edit",
-	"open",
-	"reveal",
-] },
-# iWork 文件（放在压缩包规则之前，避免被识别为压缩包）
-{ url = "*.key", use = [
-	"keynote",
-	"open",
-	"reveal",
-] },
-{ url = "*.pages", use = [
-	"pages",
-	"open",
-	"reveal",
-] },
-{ url = "*.numbers", use = [
-	"numbers",
-	"open",
-	"reveal",
-] },
-# Text
-{ mime = "text/*", use = [
-	"edit",
-	"reveal",
-] },
-# Image
-{ mime = "image/*", use = [
-	"open",
-	"reveal",
-] },
-# Media
-{ mime = "{audio,video}/*", use = [
-	"play",
-	"reveal",
-] },
-# Archive
-{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", use = [
-	"extract",
-	"reveal",
-] },
-# JSON
-{ mime = "application/{json,ndjson}", use = [
-	"edit",
-	"reveal",
-] },
-{ mime = "*/javascript", use = [
-	"edit",
-	"reveal",
-] },
-# Empty file
-{ mime = "inode/empty", use = [
-	"edit",
-	"reveal",
-] },
-# Fallback
-{ url = "*", use = [
-	"open",
-	"reveal",
-] },
+prepend_rules = [
+# Text and source files remain editable without MIME detection.
+{ url = "*.json", use = "edit" },
+{ url = "*.jsonc", use = "edit" },
+{ url = "*.ndjson", use = "edit" },
+{ url = "*.jsonl", use = "edit" },
+{ url = "*.txt", use = "edit" },
+{ url = "*.log", use = "edit" },
+{ url = "*.md", use = "edit" },
+{ url = "*.csv", use = "edit" },
+{ url = "*.tsv", use = "edit" },
+{ url = "*.yaml", use = "edit" },
+{ url = "*.yml", use = "edit" },
+{ url = "*.toml", use = "edit" },
+{ url = "*.xml", use = "edit" },
+{ url = "*.html", use = "edit" },
+{ url = "*.css", use = "edit" },
+{ url = "*.js", use = "edit" },
+{ url = "*.jsx", use = "edit" },
+{ url = "*.ts", use = "edit" },
+{ url = "*.tsx", use = "edit" },
+{ url = "*.rs", use = "edit" },
+{ url = "*.go", use = "edit" },
+{ url = "*.py", use = "edit" },
+{ url = "*.rb", use = "edit" },
+{ url = "*.sh", use = "edit" },
+{ url = "*.bash", use = "edit" },
+{ url = "*.zsh", use = "edit" },
+{ url = "*.fish", use = "edit" },
+{ url = "*.jl", use = "edit" },
+{ url = "*.m", use = "edit" },
+{ url = "*.tex", use = "edit" },
+{ url = "*.sql", use = "edit" },
+{ url = "*.ini", use = "edit" },
+{ url = "*.conf", use = "edit" },
+{ url = "*.cfg", use = "edit" },
+{ url = ".env", use = "edit" },
 ]
 
 [tasks]
-micro_workers = 10
-macro_workers = 10
 bizarre_retry = 3
 image_alloc = 536870912      # 512MB
 image_bound = [10000, 10000]
-suppress_preload = false
 
 [plugin]
+# Resolve MIME from the extension database in Lua; never invoke file(1).
+fetchers = [
+{ url = "local://*", run = "mime-ext.local", prio = "high", group = "mime" },
+{ url = "remote://*", run = "mime-ext.remote", prio = "high", group = "mime" },
+]
+preloaders = []
 prepend_previewers = [
 { url = "*.csv", run = "duckdb" },
 { url = "*.tsv", run = "duckdb" },
 { url = "*.parquet", run = "duckdb" },
-{ url = "*.txt", run = "duckdb" },
 { url = "*.xlsx", run = "duckdb" },
 { url = "*.db", run = "duckdb" },
 { url = "*.duckdb", run = "duckdb" },
-{ url = "*.md", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' }
-]
-
-prepend_preloaders = [
-{ url = "*.csv", run = "duckdb", multi = false },
-{ url = "*.tsv", run = "duckdb", multi = false },
-{ url = "*.parquet", run = "duckdb", multi = false },
-{ url = "*.txt", run = "duckdb", multi = false },
-{ url = "*.xlsx", run = "duckdb", multi = false },
+{ url = "*.json", run = 'piper -- bat -p --color=always --paging=never "$1"' },
+{ url = "*.jsonc", run = 'piper -- bat -p --color=always --paging=never "$1"' },
+{ url = "*.ndjson", run = 'piper -- bat -p --color=always --paging=never "$1"' },
+{ url = "*.jsonl", run = 'piper -- bat -p --color=always --paging=never "$1"' },
+{ url = "*.txt", run = 'piper -- bat -p --color=always --paging=never "$1"' },
+{ url = "*.log", run = 'piper -- bat -p --color=always --paging=never "$1"' },
+{ url = "*.md", run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"' },
+{ url = "*.yaml", run = "code" },
+{ url = "*.yml", run = "code" },
+{ url = "*.toml", run = "code" },
+{ url = "*.xml", run = "code" },
+{ url = "*.html", run = "code" },
+{ url = "*.css", run = "code" },
+{ url = "*.js", run = "code" },
+{ url = "*.jsx", run = "code" },
+{ url = "*.ts", run = "code" },
+{ url = "*.tsx", run = "code" },
+{ url = "*.lua", run = "code" },
+{ url = "*.rs", run = "code" },
+{ url = "*.go", run = "code" },
+{ url = "*.py", run = "code" },
+{ url = "*.rb", run = "code" },
+{ url = "*.sh", run = "code" },
+{ url = "*.bash", run = "code" },
+{ url = "*.zsh", run = "code" },
+{ url = "*.fish", run = "code" },
+{ url = "*.jl", run = "code" },
+{ url = "*.m", run = "code" },
+{ url = "*.tex", run = "code" },
+{ url = "*.sql", run = "code" },
+{ url = "*.ini", run = "code" },
+{ url = "*.conf", run = "code" },
+{ url = "*.cfg", run = "code" },
+{ url = ".env", run = "code" },
+{ url = "*.png", run = "image" },
+{ url = "*.jpg", run = "image" },
+{ url = "*.jpeg", run = "image" },
+{ url = "*.gif", run = "image" },
+{ url = "*.webp", run = "image" },
+{ url = "*.avif", run = "magick" },
+{ url = "*.heic", run = "magick" },
+{ url = "*.heif", run = "magick" },
+{ url = "*.jxl", run = "magick" },
+{ url = "*.tif", run = "image" },
+{ url = "*.tiff", run = "image" },
+{ url = "*.bmp", run = "image" },
+{ url = "*.ico", run = "image" },
+{ url = "*.mp4", run = "video" },
+{ url = "*.mkv", run = "video" },
+{ url = "*.mov", run = "video" },
+{ url = "*.webm", run = "video" },
+{ url = "*.avi", run = "video" },
+{ url = "*.m4v", run = "video" },
+{ url = "*.wmv", run = "video" },
+{ url = "*.flv", run = "video" },
+{ url = "*.pdf", run = "pdf" },
+{ url = "*.zip", run = "archive" },
+{ url = "*.rar", run = "archive" },
+{ url = "*.7z", run = "archive" },
+{ url = "*.tar", run = "archive" },
+{ url = "*.tgz", run = "archive" },
+{ url = "*.tbz2", run = "archive" },
+{ url = "*.txz", run = "archive" },
+{ url = "*.tzst", run = "archive" },
+{ url = "*.tar.gz", run = "archive" },
+{ url = "*.tar.bz2", run = "archive" },
+{ url = "*.tar.xz", run = "archive" },
+{ url = "*.tar.zst", run = "archive" }
 ]
