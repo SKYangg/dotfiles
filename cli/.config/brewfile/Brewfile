@@ -13,8 +13,10 @@ brew cgif
 brew chafa
 brew cli11
 brew cmake
+brew duckdb
 brew fastfetch
 brew fd
+brew ffmpeg
 brew fftw
 brew file-formula
 brew fmt
@@ -28,6 +30,7 @@ brew gdk-pixbuf
 brew gettext
 brew giflib
 brew glib
+brew glow
 brew gmp
 brew gnupg
 brew gnutls
@@ -128,6 +131,7 @@ brew ripgrep
 brew ruby
 brew rustup
 brew shared-mime-info
+brew sevenzip
 brew spdlog
 brew sqlite
 brew tbb

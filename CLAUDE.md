@@ -70,7 +70,7 @@ git clone <repo> ~/dotfiles
 cd ~/dotfiles
 ./scripts/bootstrap.sh
 # 安装 Homebrew 包
-brew bundle --file cli/.config/brewfile/Brewfile
+brew file install --file cli/.config/brewfile/Brewfile
 # 安装 VS Code/Cursor 扩展
 ./scripts/install-vscode-extensions.sh
 ./scripts/install-vscode-extensions.sh --code-bin cursor

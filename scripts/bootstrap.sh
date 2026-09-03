@@ -192,6 +192,6 @@ done
 log
 log "Next steps on a new machine:"
 log "  1. Review template files and materialize the ones you actually want."
-log "  2. Install package dependencies separately, e.g. brew bundle --file cli/.config/brewfile/Brewfile"
+log "  2. Install package dependencies separately, e.g. brew file install --file cli/.config/brewfile/Brewfile"
 log "  3. Optionally restore VS Code extensions with ./scripts/install-vscode-extensions.sh"
 log "  4. Open a new shell and verify linked configs are taking effect."

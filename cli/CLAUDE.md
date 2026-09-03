@@ -34,7 +34,7 @@
 
 ## 修改指南
 
-- 添加 Homebrew 包 → 编辑 `Brewfile`，`brew bundle` 安装
+- 添加 Homebrew 包 → 编辑 `Brewfile`，用 `brew file install --file Brewfile` 安装
 - 修改 yazi 配置 → 编辑对应 `.toml` 文件（已链接）
 - yazi plugins/flavors 目录内容不纳管（在 `.gitignore` 中），通过 `ya pack -i` 恢复
 - `kaku/assistant.toml` 含 API key，使用 `.example` 模板手动实例化
