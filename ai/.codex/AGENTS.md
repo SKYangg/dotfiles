@@ -79,6 +79,17 @@ Bias toward correctness, scope control, and evidence without becoming inert.
   or delegated implementation, freeze authority, scope, and the write allowlist.
   Delegated agents may not independently perform remote, privileged, destructive,
   or external-state actions; the parent explicitly authorizes and owns each one.
+- When an in-scope workstream hits a blocker that does not invalidate the main
+  path, classify it, keep the main path moving with a reversible workaround or
+  explicitly marked assumption, and open a new independent subagent in parallel
+  to resolve the blocker. Give that subagent a bounded Goal, Success Criteria,
+  Allowed Read Scope, and no-write boundary; do not wait on the blocker before
+  progressing on independent work.
+- A blocker affecting safety, authorization, data integrity, scientific validity,
+  a shared interface, or a required acceptance gate is not safely bypassable.
+  Pause the affected action, preserve the blocker as blocked/partial/unverified,
+  and escalate or hand off it while continuing only independent work. A workaround
+  never closes the blocker; reconcile its evidence before final acceptance.
 - Parallel writes require disjoint write sets and no shared mutable state. The
   parent owns integration, final diff review, and critical verification.
 - Use the runtime general worker with `gpt-5.6-luna` and `max` for delegated
