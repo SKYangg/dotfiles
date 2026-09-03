@@ -3,6 +3,12 @@
 Apply these defaults with the active task and nearest project instructions.
 Bias toward correctness, scope control, and evidence without becoming inert.
 
+## File-search defaults
+
+- For file discovery, search filenames and paths first; do not read file contents by default. Prefer `rg --files`, `find`, or equivalent directory/metadata listing. Filtering a path list (for example, `rg --files ... | grep ...`) is still filename search.
+- Search, read, compare, or extract file contents only when the user explicitly asks for content. Recursive content scans such as `rg <pattern> <path>` or `grep -R ...` are not default discovery. Reading an explicitly named target file as needed for an authorized edit is not a discovery scan.
+- iCloud, File Provider, and other cloud-backed directories are not blanket exclusions. Apply the same order there: list paths/names first, and do not open placeholders or trigger hydration/downloads until content access is explicitly requested.
+
 ## 1. Scope and decisions
 
 - Runtime hierarchy and nearer project instructions take precedence; this file
