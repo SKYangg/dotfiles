@@ -59,6 +59,19 @@ let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
 filetype plugin indent on
 colorscheme atom-dark
+" VimTeX build/view only; keep CoC completion and existing editing keys.
+let g:vimtex_mappings_enabled = 0
+let g:vimtex_complete_enabled = 0
+let g:vimtex_indent_enabled = 0
+let g:vimtex_syntax_enabled = 0
+let g:vimtex_view_method = 'skim'
+let g:vimtex_view_automatic = 0
+let g:vimtex_compiler_latexmk = {'continuous': 0}
+let g:vimtex_compiler_latexmk_engines = {'_': ''}
+augroup vim_local_tex_server
+  autocmd!
+  autocmd FileType tex if empty(v:servername) | call remote_startserver('VIMTEX' . getpid()) | endif
+augroup END
 call plug#begin()
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'mhinz/vim-startify'
@@ -68,6 +81,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'vim-autoformat/vim-autoformat'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'lervag/vimtex', {'tag': 'v2.15'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'liuchengxu/vim-which-key'
 Plug 'jiangmiao/auto-pairs'
@@ -105,3 +119,13 @@ function! s:ShowDocumentation() abort
   endif
 endfunction
 nnoremap <silent> K :<C-u>call <SID>ShowDocumentation()<CR>
+
+" Manual LaTeX builds; resolve the managed vimrc symlink to find the module.
+execute 'source ' . fnameescape(fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/.vim/latex-build.vim')
+let g:which_key_map = get(g:, 'which_key_map', {})
+let g:which_key_map.l = get(g:which_key_map, 'l', {'name': '+latex'})
+let g:which_key_map.l.b = 'build (latexmk)'
+let g:which_key_map.l.v = 'view PDF (Skim)'
+let g:which_key_map.l.s = 'stop build'
+let g:which_key_map.l.o = 'build output'
+call which_key#register('<Space>', 'g:which_key_map')

@@ -310,3 +310,51 @@ JULIA_DEPOT_PATH="$HOME/.julia:" JULIA_LOAD_PATH='@:@stdlib' \
 回退：保存工作，移除 `languageserver.texlab` 配置条目后重启 Vim；保留 Python/Julia 条目。Texlab 程序可以暂留，未启用时不自动运行。
 
 配置依据：[Texlab 官方配置说明](https://github.com/latex-lsp/texlab/wiki/Configuration)。
+
+## 14. LaTeX 编译与 Skim 预览（VimTeX）
+
+本节替代此前自定义构建器说明。保存工作后重启 Vim；Skim 如果原先已运行，保存其工作并重新打开，使新的同步设置生效。
+
+| 普通模式按键 | 功能 | 命令 |
+|---|---|---|
+| `Space lb` | 保存当前文件并单次编译 | `:LatexBuild` |
+| `Space lv` | 打开 Skim 并定位到当前源码对应 PDF 位置 | `:VimtexView` |
+| `Space ls` | 停止当前项目构建 | `:VimtexStop` |
+| `Space lo` | 查看构建输出 | `:VimtexCompileOutput` |
+
+`:LatexBuildLog` 保留为构建输出的兼容入口。错误仍用 `:copen` 打开、Enter 跳转、`:cnext` / `:cprevious` 切换；日志解析由 VimTeX 维护。
+
+### 主文件与构建
+
+主文件含 `\documentclass`。子文件前 50 行指定主文件：
+
+```tex
+% !TeX root = ../main.tex
+```
+
+路径相对于注释所在文件；支持空格路径。`Space lb` 保留严格检查，主文件不明确或与 VimTeX 识别不同则提示，不猜测。构建前保存当前文件，其他打开且修改过的 TeX/Bib/sty/cls/latexmkrc buffer 需先保存。VimTeX 的原生命令不经过这个保存保护，日常请使用 `Space lb`。
+
+VimTeX 使用 latexmk **单次构建**，不会启用持续编译或保存自动构建。项目 `.latexmkrc` 控制引擎和输出目录，构建增加 `-synctex=1`、非交互模式与文件行号输出。同一项目重复触发会拒绝启动第二个构建；停止使用 `Space ls`。
+
+### PDF 正反向定位
+
+先成功编译一次，确保 PDF 旁有 `.synctex.gz`。在源码需要查看的位置按 `Space lv`。配置不自动打开 PDF；已打开文档的刷新由 VimTeX/Skim 配合处理。
+
+在 Skim 中按住 **Shift + Command** 点击 PDF 文字，发起反向定位。TeX 文件打开时，Vim 自动注册本会话的远程服务器；无需自己指定服务器名称。回调会寻找拥有该项目的 Vim 会话；必须保留原 Vim 会话运行。返回源码与自动把某个终端窗口置前是两个行为，当前没有增加终端前台焦点脚本。
+
+Skim 设置 → 同步（Sync）中的编辑器设置为 Custom：
+
+- Command：`<vim-executable>`
+- Arguments：`-v --not-a-term -T dumb -c "VimtexInverseSearch %line '%file'"`
+
+换机器时将 `<vim-executable>` 替换为 `command -v vim` 的结果，并核对 `+clientserver` 支持。可用 `:echo v:servername` 查看当前服务名，`:VimtexInfo` 查看项目、编译和预览信息。
+
+### 版本、验收与回退
+
+VimTeX 固定 **v2.15**，当前共 17 个插件。禁用其默认快捷键、补全、缩进和语法覆盖，Texlab 继续负责语言服务；F2 与其他语言配置保持原样。
+
+临时带空格路径的多文件项目已生成 PDF 和 SyncTeX，项目 latexmkrc 输出目录生效。Skim 配置已写入并回读；通过其相同反向搜索命令，实际 Vim 已定位到正确子文件第 2 行。已调用正式 `VimtexView` 正向入口，无 Vim 错误。**Skim 的鼠标点击、PDF 高亮位置和窗口焦点尚未做视觉验收：本轮界面工具连续超时。** 不将命令成功当作 GUI 验收。
+
+原配置、旧构建器和 Skim 偏好备份在一次性本地备份目录中，系统可能清理。回退仅恢复本轮 `.vimrc`、`latex-build.vim` 和文档差异；Skim 仅恢复 `SKTeXEditorPreset`、`SKTeXEditorCommand`、`SKTeXEditorArguments` 三项旧值（原先无显式值则删除这三个覆盖项），不要导入完整旧偏好覆盖后续设置。
+
+参考：[VimTeX 官方文档](https://github.com/lervag/vimtex/blob/v2.15/doc/vimtex.txt)。

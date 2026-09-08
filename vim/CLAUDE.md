@@ -99,3 +99,20 @@ Vim 编辑器配置，基于 vim-plug 管理插件，提供轻量编辑、搜索
 - CoC 将 Vim `tex` 映射为 `latex`，因此服务匹配 `latex` / `plaintex` / `bib`。优先识别 `.latexmkrc`、`latexmkrc`、`.git`，没有项目标记的独立文件也可使用。
 - 关闭保存自动构建、构建后自动 PDF 跳转与额外 ChkTeX 检查，保留 Texlab 自身语法诊断。编译沿用项目命令；不强制指定 XeLaTeX 或改变 F2。
 - 补全、标签/文献导航、引用、标签重命名编辑、章节符号、BibTeX 补全和诊断刷新已通过临时项目验收。维护与回退见手册第 13 节。
+
+## 第五轮手动 LaTeX 编译（2026-09-08）
+
+- [编译模块](.vim/latex-build.vim)由 `.vimrc` 加载；`Space lb` / `:LatexBuild` 使用 Vim 原生 job 异步调用 latexmk，无新插件。
+- 当前 TeX 文件包含 `\documentclass` 时可作为主文件；否则前 50 行使用 `% !TeX root = ../main.tex`。相对路径以注释所在文件为基准，可含空格；支持有界根链并拒绝循环/冲突/缺失文件。
+- 在主文件目录执行 `latexmk -interaction=nonstopmode -file-line-error ./主文件`，引擎与输出目录由 latexmkrc 决定。构建前保存当前文件；其他已修改的 TeX/Bib/sty/cls/latexmkrc buffer 需先保存。
+- 每个 Vim 会话最多一个构建，防止共享 quickfix 冲突。失败打开 quickfix，不能解析的错误指向完整日志；`:LatexBuildLog` 查看本次会话最近日志。
+- 手册第 14 节记录验收、操作及边界；Python、Julia、Texlab、F2 与自动保存行为不变。
+
+## 第六轮 VimTeX + Skim（2026-09-08，替代第五轮构建后端）
+
+- VimTeX 固定 v2.15（9f6a5bb0a9c9f1542fe88dc07511ce8401242e2a）；Skim 使用本机已有安装。当前共 17 个 Vim 插件。
+- VimTeX 接管构建、日志解析、停止与 Skim 预览；`latex-build.vim` 仅保留主文件/保存检查及快捷键，不再创建独立后台编译任务。
+- `continuous=0`：只手动单次编译；默认选项生成 SyncTeX。项目 latexmkrc 控制引擎及输出目录，未提供引擎配置时不强制覆盖 latexmk 默认值。
+- 禁用 VimTeX 默认映射、补全、缩进及语法覆盖；保留 CoC/Texlab 和原有编辑按键。`Space lb/lv/ls/lo` 分别构建、PDF 定位、停止、输出。
+- TeX buffer 按需注册唯一 Vim server；Skim Custom 编辑器使用 Homebrew Vim 的 `VimtexInverseSearch`。回调已验证定位到正确测试文件/行；Skim 鼠标点击和前台焦点尚未完成 GUI 验收（界面工具超时）。
+- 操作与恢复见实用手册第 14 节。原第五轮实现与 Skim 偏好快照保留在一次性本地备份目录中，可能被系统清理。
