@@ -49,18 +49,57 @@ SAVEHIST=50000
 [ -f "$HOME/.zshrc.aliases" ] && source "$HOME/.zshrc.aliases"
 
 # Named directories
-hash -d iC=~/Library/Mobile\ Documents/com~apple~CloudDocs
+if [[ "${DOTFILES_PLATFORM}" == macos && -d "$HOME/Library/Mobile Documents/com~apple~CloudDocs" ]]; then
+	hash -d iC="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+fi
 
 # Conda
 # This installation does not auto-activate an environment, so defer its shell
 # hook until `conda` or one of the conda aliases is first used.
 typeset -g _DOTFILES_CONDA_LOADED=0
+_dotfiles_find_conda() {
+	local candidate
+	if [[ -n "${CONDA_EXE:-}" && -x "${CONDA_EXE}" ]]; then
+		print -r -- "${CONDA_EXE}"
+		return 0
+	fi
+	if (( $+commands[conda] )); then
+		print -r -- "${commands[conda]}"
+		return 0
+	fi
+	for candidate in \
+		"$HOME/miniconda3/bin/conda" \
+		"$HOME/anaconda3/bin/conda" \
+		"$HOME/.local/conda/bin/conda" \
+		/opt/conda/bin/conda; do
+		if [[ -x "${candidate}" ]]; then
+			print -r -- "${candidate}"
+			return 0
+		fi
+	done
+	if (( $+commands[brew] )); then
+		candidate="$(brew --prefix miniconda 2>/dev/null)/bin/conda"
+		if [[ -x "${candidate}" ]]; then
+			print -r -- "${candidate}"
+			return 0
+		fi
+	fi
+	if [[ -n "${HOMEBREW_PREFIX:-}" ]]; then
+		candidate="${HOMEBREW_PREFIX}/Caskroom/miniconda/base/bin/conda"
+		if [[ -x "${candidate}" ]]; then
+			print -r -- "${candidate}"
+			return 0
+		fi
+	fi
+	return 1
+}
 _dotfiles_conda_load() {
 	(( _DOTFILES_CONDA_LOADED )) && return 0
 
-	local conda_exe="/opt/homebrew/Caskroom/miniconda/base/bin/conda"
-	if [[ ! -x "$conda_exe" ]]; then
-		print -u2 "Conda executable not found: $conda_exe"
+	local conda_exe
+	conda_exe="$(_dotfiles_find_conda)"
+	if [[ -z "${conda_exe}" ]]; then
+		print -u2 "Conda executable not found on this host"
 		return 127
 	fi
 
@@ -77,8 +116,12 @@ conda() {
 
 # Shell tools
 bindkey -v
-eval "$(zoxide init zsh --cmd cd)"
-eval "$(atuin init zsh)"
+if (( $+commands[zoxide] )); then
+	eval "$(zoxide init zsh --cmd cd)"
+fi
+if (( $+commands[atuin] )); then
+	eval "$(atuin init zsh)"
+fi
 
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 
@@ -162,6 +205,12 @@ fi
 # Kaku calls bindkey -e; restore the selected vi mode after its integration.
 KEYTIMEOUT=1
 bindkey -v
-bindkey -M emacs '^R' atuin-search
-bindkey -M viins '^R' atuin-search-viins
-bindkey -M vicmd '^R' atuin-search-vicmd
+if (( $+widgets[atuin-search] )); then
+	bindkey -M emacs '^R' atuin-search
+fi
+if (( $+widgets[atuin-search-viins] )); then
+	bindkey -M viins '^R' atuin-search-viins
+fi
+if (( $+widgets[atuin-search-vicmd] )); then
+	bindkey -M vicmd '^R' atuin-search-vicmd
+fi

@@ -1,6 +1,6 @@
 # Dotfiles Migration Checklist
 
-这个清单基于当前机器 `/Users/skyang` 的实际文件布局整理，目标是把适合纳管的配置逐步迁移到当前目录 `/Users/skyang/dotfiles`。
+这个清单基于当前机器 `$HOME` 的实际文件布局整理，目标是把适合纳管的配置逐步迁移到 `$HOME/dotfiles`，并保留跨平台适配边界。
 
 ## 当前状态
 

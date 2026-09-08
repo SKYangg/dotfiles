@@ -6,6 +6,7 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 HOME_DIR="${HOME}"
 BACKUP_ROOT=""
 DRY_RUN=0
+PLATFORM="${DOTFILES_PLATFORM:-auto}"
 
 MANAGED_PACKAGES=(
   zsh
@@ -20,6 +21,7 @@ MANAGED_PACKAGES=(
   editor
   ai
   docker
+  julia
 )
 
 # These files exist in managed package directories but should not be linked
@@ -48,6 +50,7 @@ Link managed dotfiles from this repository back into a target home directory.
 Options:
   --home DIR        Restore into DIR instead of $HOME
   --backup DIR      Use DIR for backups instead of ~/.dotfiles-backup-<timestamp>
+  --platform NAME   Select auto, macos, or linux (default: auto)
   --dry-run         Print actions without modifying anything
   -h, --help        Show this help
 EOF
@@ -65,6 +68,29 @@ run_cmd() {
   else
     "$@"
   fi
+}
+
+resolve_platform() {
+  local requested="$1"
+  if [[ "${requested}" == "auto" ]]; then
+    case "$(uname -s)" in
+      Darwin) printf 'macos\n' ;;
+      Linux) printf 'linux\n' ;;
+      *)
+        printf 'Unsupported host OS: %s\n' "$(uname -s)" >&2
+        return 1
+        ;;
+    esac
+    return 0
+  fi
+
+  case "${requested}" in
+    macos|linux) printf '%s\n' "${requested}" ;;
+    *)
+      printf 'Unsupported platform: %s (expected auto, macos, or linux)\n' "${requested}" >&2
+      return 1
+      ;;
+  esac
 }
 
 should_skip_source() {
@@ -88,6 +114,22 @@ should_skip_source() {
   if [[ "${rel}" == */CLAUDE.md ]] && [[ "${rel}" != */*/CLAUDE.md ]]; then
     return 0
   fi
+  # Julia's project environments are repositories' data, not files relative to
+  # $HOME. Only startup.jl has a home-directory target and is handled below.
+  if [[ "${rel}" == julia/* ]] && [[ "${rel}" != "julia/startup.jl" ]]; then
+    return 0
+  fi
+  # AeroSpace is a macOS-only window manager. Keep the package in the repo for
+  # macOS restores, but never install its config on Linux.
+  if [[ "${PLATFORM}" != "macos" ]] && [[ "${rel}" == aerospace/* ]]; then
+    return 0
+  fi
+  # Brewfile is an installation manifest for macOS/Homebrew, not a Linux home
+  # configuration. Keep it available for macOS package setup without linking a
+  # misleading file on server hosts.
+  if [[ "${PLATFORM}" != "macos" ]] && [[ "${rel}" == "cli/.config/brewfile/Brewfile" ]]; then
+    return 0
+  fi
   return 1
 }
 
@@ -99,6 +141,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --backup)
       BACKUP_ROOT="$2"
+      shift 2
+      ;;
+    --platform)
+      PLATFORM="$2"
       shift 2
       ;;
     --dry-run)
@@ -116,6 +162,8 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+PLATFORM="$(resolve_platform "${PLATFORM}")"
 
 if [[ -z "${BACKUP_ROOT}" ]]; then
   BACKUP_ROOT="${HOME_DIR}/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
@@ -138,7 +186,11 @@ for pkg in "${MANAGED_PACKAGES[@]}"; do
       continue
     fi
 
-    target_rel="${rel#${pkg}/}"
+    if [[ "${rel}" == "julia/startup.jl" ]]; then
+      target_rel=".julia/config/startup.jl"
+    else
+      target_rel="${rel#${pkg}/}"
+    fi
     target="${HOME_DIR}/${target_rel}"
     parent_dir="$(dirname -- "${target}")"
     backup_path="${BACKUP_ROOT}/${target_rel}"
@@ -180,6 +232,7 @@ done
 log
 log "repo_root: ${REPO_ROOT}"
 log "home_dir: ${HOME_DIR}"
+log "platform: ${PLATFORM}"
 log "backup_root: ${BACKUP_ROOT}"
 log "linked: ${linked}"
 log "backed_up: ${backed_up}"
@@ -192,6 +245,6 @@ done
 log
 log "Next steps on a new machine:"
 log "  1. Review template files and materialize the ones you actually want."
-log "  2. Install package dependencies separately, e.g. brew file install --file cli/.config/brewfile/Brewfile"
+log "  2. Install platform dependencies separately (Homebrew on macOS; the host package manager on Linux)."
 log "  3. Optionally restore VS Code extensions with ./scripts/install-vscode-extensions.sh"
 log "  4. Open a new shell and verify linked configs are taking effect."

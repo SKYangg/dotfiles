@@ -15,7 +15,7 @@ Ghostty 终端模拟器、Starship 跨 shell 提示符配置。
 
 ## 依赖
 
-- 工具：`ghostty`（终端）、`starship`（提示符，`brew install starship`）
+- 工具：可选 `ghostty`（终端）、`starship`（提示符；使用主机包管理器安装）
 
 ## 修改指南
 

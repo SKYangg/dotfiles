@@ -11,7 +11,7 @@ Zsh 主配置，包含 Oh My Zsh 框架、Powerlevel10k 主题、别名、环境
 | 文件 | symlink 目标 | 用途 |
 |------|-------------|------|
 | `.zshrc` | `~/.zshrc` | 主入口：加载 OMZ、p10k、plugins、source 子文件、按需初始化 NVM/Conda、Kaku 集成与 vi 重绑 |
-| `.zprofile` | `~/.zprofile` | 登录 shell 环境：Homebrew shellenv、OrbStack、Julia depot |
+| `.zprofile` | `~/.zprofile` | 登录 shell 环境：可选 Homebrew/OrbStack、Julia depot |
 | `.zshenv` | `~/.zshenv` | 所有 shell 通用（最早加载）：PATH 去重/定向清理、`path_prepend`、cargo/goup |
 | `.zshrc.aliases` | `~/.zshrc.aliases` | 别名定义，由 `.zshrc` source |
 | `.zshrc.env` | `~/.zshrc.env` | 工具环境变量（由 `.zshrc` source） |
@@ -40,7 +40,13 @@ Zsh 主配置，包含 Oh My Zsh 框架、Powerlevel10k 主题、别名、环境
 ## 依赖
 
 - 工具：`zsh`、`oh-my-zsh`、`powerlevel10k`
-- 外部：`conda`（`.zshrc` 内 init）、`homebrew`（/opt/homebrew/bin）、`kaku`（`~/.config/kaku`）
+- 外部：`conda`（`.zshrc` 内按需 init）、可选 `homebrew`、`kaku`（`~/.config/kaku`）
+
+## 平台适配
+
+- `DOTFILES_PLATFORM` 自动识别为 `macos` 或 `linux`，也可由主机 profile 覆盖。
+- Homebrew、Conda、Java、pnpm、浏览器和剪贴板命令均优先使用环境变量或当前主机可发现的可执行文件。
+- macOS 专属的 iCloud、WindowServer 和 `networksetup` 入口只在相应命令或目录存在时定义。
 
 ## 修改指南
 

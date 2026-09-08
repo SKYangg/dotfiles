@@ -16,8 +16,9 @@
 | `.config/yazi/init.lua` | `~/.config/yazi/init.lua` | yazi Lua 插件初始化 |
 | `.config/yazi/package.toml` | `~/.config/yazi/package.toml` | yazi 插件清单 |
 | `.config/atuin/config.toml` | `~/.config/atuin/config.toml` | atuin 历史搜索配置 |
-| `.config/btop/btop.conf` | `~/.config/btop/btop.conf` | btop 系统监控配置 |
-| `.config/brewfile/Brewfile` | `~/.config/brewfile/Brewfile` | Homebrew 包清单 |
+| `.config/btop/btop.conf` | `~/.config/btop/btop.conf` | btop 系统监控配置（主题随仓库携带） |
+| `.config/btop/themes/dracula.theme` | `~/.config/btop/themes/dracula.theme` | btop Dracula 主题 |
+| `.config/brewfile/Brewfile` | `~/.config/brewfile/Brewfile` | macOS/Homebrew 包清单 |
 | `.config/uv/uv.toml` | `~/.config/uv/uv.toml` | uv Python 包管理器配置 |
 | `.condarc` | `~/.condarc` | conda 配置（channels、环境路径） |
 | `.npmrc` | `~/.npmrc` | npm 全局配置 |
@@ -29,7 +30,7 @@
 
 ## 依赖
 
-- 工具：`yazi`、`atuin`、`btop`、`brew`、`uv`、`conda`、`npm`、`neofetch`
+- 工具：`yazi`、`atuin`、`btop`、`uv`、`conda`、`npm`、`neofetch`；`brew` 仅为 macOS 依赖清单
 - yazi 插件：通过 `ya pack` 管理（见 `package.toml`）
 
 ## 修改指南

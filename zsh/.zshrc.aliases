@@ -2,12 +2,38 @@
 alias ls="eza --icons --time-style +%Y-%m-%d\ %H:%M:%S"
 alias lg="lazygit"
 alias tree="eza -T"
-alias pwc="pwd | pbcopy"
 alias ff="fastfetch"
 alias vi="vim"
 alias svi='sudo -e'
-alias br="brew"
-alias m-cli="matlab -nodesktop"
+
+# Copy the current directory with the first clipboard provider available on
+# this host. macOS uses pbcopy; Linux desktops commonly provide wl-copy or
+# xclip. Keeping the fallback here avoids making the shell depend on one OS.
+_dotfiles_clipboard() {
+	if (( $+commands[pbcopy] )); then
+		command pbcopy
+	elif (( $+commands[wl-copy] )); then
+		command wl-copy
+	elif (( $+commands[xclip] )); then
+		command xclip -selection clipboard
+	else
+		print -u2 "No clipboard command found (pbcopy, wl-copy, or xclip)"
+		return 127
+	fi
+}
+pwc() {
+	pwd | _dotfiles_clipboard
+}
+
+if (( $+commands[brew] )); then
+	alias br="brew"
+	brup() {
+		brew update && brew upgrade && brew cleanup
+	}
+fi
+if (( $+commands[matlab] )); then
+	alias m-cli="matlab -nodesktop"
+fi
 
 # Navigation and config
 # `z`/`zi` were dead: with `zoxide init --cmd cd`, `zoxide query` only prints a
@@ -17,23 +43,31 @@ alias vimconfig="vi ~/.vimrc"
 alias sshconfig="vi ~/.ssh/config"
 
 # Maintenance
-alias brup="brew update && brew upgrade && brew cleanup"
-# Force-restarting WindowServer tears down the whole GUI session and loses all
-# unsaved work, so it must never be one keystroke away. Defined as a function
-# (not an alias) to allow the confirmation prompt.
-wrs() {
-	print -u2 "WARNING: this force-kills WindowServer, logging you out immediately."
-	print -u2 "All unsaved work in every application will be lost."
-	local reply
-	read -r "reply?Type 'yes' to continue: "
-	if [[ "$reply" != "yes" ]]; then
-		print -u2 "Aborted."
-		return 1
-	fi
-	pgrep WindowServer | xargs sudo kill -9
-}
-alias prxon="sudo networksetup -setsocksfirewallproxystate Wi-Fi on"
-alias prxof="sudo networksetup -setsocksfirewallproxystate Wi-Fi off"
+if [[ "${DOTFILES_PLATFORM}" == macos ]]; then
+	# Force-restarting WindowServer tears down the whole GUI session and loses
+	# all unsaved work, so it must never be one keystroke away. Defined as a
+	# function (not an alias) to allow the confirmation prompt.
+	wrs() {
+		print -u2 "WARNING: this force-kills WindowServer, logging you out immediately."
+		print -u2 "All unsaved work in every application will be lost."
+		local reply
+		read -r "reply?Type 'yes' to continue: "
+		if [[ "$reply" != "yes" ]]; then
+			print -u2 "Aborted."
+			return 1
+		fi
+		pgrep WindowServer | xargs sudo kill -9
+	}
+fi
+if (( $+commands[networksetup] )); then
+	alias prxon="sudo networksetup -setsocksfirewallproxystate Wi-Fi on"
+	alias prxof="sudo networksetup -setsocksfirewallproxystate Wi-Fi off"
+fi
 
 # Project-specific helpers
-alias dld="source $HOME/Tools/pdf_grabber/.venv/bin/activate && python $HOME/Tools/pdf_grabber/download_pdfs.py"
+if [[ -f "$HOME/Tools/pdf_grabber/.venv/bin/activate" && -f "$HOME/Tools/pdf_grabber/download_pdfs.py" ]]; then
+	dld() {
+		source "$HOME/Tools/pdf_grabber/.venv/bin/activate" || return
+		python "$HOME/Tools/pdf_grabber/download_pdfs.py" "$@"
+	}
+fi

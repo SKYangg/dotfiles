@@ -1,21 +1,49 @@
 # PATH bootstrap. Loaded first (conf.d is sourced in alphabetical order).
 #
-# Homebrew is NOT in /etc/paths or /etc/paths.d on this machine, so nothing puts
-# /opt/homebrew/bin on PATH by default. Zsh gets it from `brew shellenv` in
-# ~/.zprofile, but that file is zsh-only and fish never reads it. Without the
-# line below, a fish session started directly by a terminal (rather than via
-# `exec fish` from an already-configured zsh) has no brew, starship, zoxide,
-# atuin, fzf, eza or conda at all.
-if test -x /opt/homebrew/bin/brew
-    /opt/homebrew/bin/brew shellenv | source
+if not set -q DOTFILES_PLATFORM
+    switch (uname)
+        case Darwin
+            set -gx DOTFILES_PLATFORM macos
+        case Linux
+            set -gx DOTFILES_PLATFORM linux
+        case '*'
+            set -gx DOTFILES_PLATFORM unknown
+    end
 end
 
-# Homebrew mirrors, mirroring ~/.zprofile so both shells fetch from the same
-# place instead of one silently falling back to the upstream remote.
-set -gx HOMEBREW_BREW_GIT_REMOTE https://mirrors.ustc.edu.cn/brew.git
-set -gx HOMEBREW_CORE_GIT_REMOTE https://mirrors.ustc.edu.cn/homebrew-core.git
-set -gx HOMEBREW_BOTTLE_DOMAIN https://mirrors.ustc.edu.cn/homebrew-bottles
-set -gx HOMEBREW_API_DOMAIN https://mirrors.ustc.edu.cn/homebrew-bottles/api
+# Fish does not read ~/.zprofile, so discover Homebrew independently when it is
+# installed. The candidates cover the standard macOS and Linux prefixes while
+# still allowing a custom HOMEBREW_PREFIX.
+set -l _dotfiles_brew_bin
+if type -q brew
+    set _dotfiles_brew_bin (command -s brew)
+else
+    set -l _dotfiles_brew_prefixes
+    if set -q HOMEBREW_PREFIX
+        set --append _dotfiles_brew_prefixes $HOMEBREW_PREFIX
+    end
+    set --append _dotfiles_brew_prefixes \
+        /opt/homebrew \
+        /usr/local \
+        /home/linuxbrew/.linuxbrew \
+        $HOME/.linuxbrew
+    for _dotfiles_brew_prefix in $_dotfiles_brew_prefixes
+        if test -x "$_dotfiles_brew_prefix/bin/brew"
+            set _dotfiles_brew_bin "$_dotfiles_brew_prefix/bin/brew"
+            break
+        end
+    end
+end
+
+if test -n "$_dotfiles_brew_bin"
+    "$_dotfiles_brew_bin" shellenv fish | source
+
+    # Keep the mirror policy scoped to hosts that actually use Homebrew.
+    set -q HOMEBREW_BREW_GIT_REMOTE; or set -gx HOMEBREW_BREW_GIT_REMOTE https://mirrors.ustc.edu.cn/brew.git
+    set -q HOMEBREW_CORE_GIT_REMOTE; or set -gx HOMEBREW_CORE_GIT_REMOTE https://mirrors.ustc.edu.cn/homebrew-core.git
+    set -q HOMEBREW_BOTTLE_DOMAIN; or set -gx HOMEBREW_BOTTLE_DOMAIN https://mirrors.ustc.edu.cn/homebrew-bottles
+    set -q HOMEBREW_API_DOMAIN; or set -gx HOMEBREW_API_DOMAIN https://mirrors.ustc.edu.cn/homebrew-bottles/api
+end
 
 # ~/.cargo/env and ~/.goup/env are POSIX scripts, so fish cannot source them.
 # Add their bin directories directly instead.
@@ -41,20 +69,20 @@ if test -f $HOME/.orbstack/shell/init2.fish
 end
 
 # Deliberately not added, to document that the difference from zsh is intended:
-#   /opt/homebrew/opt/fzf/bin  fzf is already on PATH via /opt/homebrew/bin.
+#   the package-specific fzf directory is unnecessary when its main bin
+#   directory is already on PATH.
 #   ~/.config/kaku/zsh/bin     Kaku is zsh-only; the real yazi is in brew.
 #   ~/.pi/agent/bin            injected at runtime by the pi agent, not a dotfile.
 
 # Stale entries that can survive in an exported PATH inherited from a parent
 # shell even after their configuration was removed. Mirrors `path_remove` in
 # ~/.zshenv. Host-injected and third-party manager paths are left untouched.
-for dir in /opt/nanobrew/prefix/bin \
-    $HOME/claude-model/bin \
-    $HOME/.codebuddy/bin \
-    /Applications/MATLAB_R2025b.app/bin \
-    /Library/Java/JavaVirtualMachines/amazon-corretto-23.jdk/Contents/Home/bin
+if test "$DOTFILES_PLATFORM" = macos
+    for dir in $HOME/claude-model/bin \
+        $HOME/.codebuddy/bin
 
-    if set -l i (contains --index -- $dir $PATH)
-        set --erase PATH[$i]
+        if set -l i (contains --index -- $dir $PATH)
+            set --erase PATH[$i]
+        end
     end
 end

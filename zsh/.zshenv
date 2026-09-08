@@ -3,6 +3,19 @@
 # nesting level). `typeset -U` also collapses duplicates inherited from a parent.
 typeset -U path PATH fpath FPATH
 
+# Keep the repository and platform discoverable without baking this machine's
+# absolute path into every tool-specific file. The value can be overridden by
+# a host profile when the repository is cloned somewhere else.
+if [[ -z "${DOTFILES_PLATFORM:-}" ]]; then
+	case "${OSTYPE:-}" in
+		darwin*) DOTFILES_PLATFORM=macos ;;
+		linux*) DOTFILES_PLATFORM=linux ;;
+		*) DOTFILES_PLATFORM=unknown ;;
+	esac
+fi
+export DOTFILES_PLATFORM
+export DOTFILES_ROOT="${DOTFILES_ROOT:-$HOME/dotfiles}"
+
 # Prepend a directory to PATH only if it exists, so missing tools never leave
 # dead entries behind. Defined here (earliest-loaded file) so .zshrc.env and
 # .zshrc can both use it.
@@ -28,11 +41,8 @@ path_remove() {
 # These entries can survive in PATH inherited from an already-running parent
 # shell even after their configuration lines have been removed.
 path_remove \
-	/opt/nanobrew/prefix/bin \
 	"$HOME/claude-model/bin" \
-	"$HOME/.codebuddy/bin" \
-	/Applications/MATLAB_R2025b.app/bin \
-	/Library/Java/JavaVirtualMachines/amazon-corretto-23.jdk/Contents/Home/bin
+	"$HOME/.codebuddy/bin"
 
 # uv
 path_prepend "$HOME/.local/bin"

@@ -4,7 +4,7 @@
 
 ## 仓库概述
 
-本仓库以 **包目录（package-style）** 管理 `/Users/skyang` 下的个人配置文件，每个顶层目录对应一个工具域，通过 `scripts/bootstrap.sh` 将文件以符号链接形式还原到 `$HOME` 对应路径。敏感文件（含密钥、token、内网地址）**不纳管**，改以 `.example` 模板保留在仓库中，需在新机器上手动实例化。
+本仓库以 **包目录（package-style）** 管理 `$HOME` 下的个人配置文件，每个顶层目录对应一个工具域，通过 `scripts/bootstrap.sh` 将文件以符号链接形式还原到当前用户的 `$HOME`。敏感文件（含密钥、token、内网地址）**不纳管**，改以 `.example` 模板保留在仓库中，需在新机器上手动实例化。
 
 ## 模块导航
 
@@ -23,14 +23,15 @@
 | aerospace | `aerospace/` | macOS 平铺窗口管理器（AeroSpace） |
 | docker | `docker/` | Docker daemon 配置 |
 | ssh | `ssh/` | SSH config 模板（sanitized） |
+| julia | `julia/` | Julia startup 与项目环境（仅 startup 参与 home 链接） |
 | scripts | `scripts/` | bootstrap.sh 安装脚本、vscode 扩展恢复脚本 |
 
 ## 架构图
 
 ```mermaid
 graph TD
-  ROOT["dotfiles repo\n/Users/skyang/dotfiles"]
-  HOME["$HOME\n/Users/skyang"]
+  ROOT["dotfiles repo\n$HOME/dotfiles"]
+  HOME["$HOME"]
 
   ROOT --> |bootstrap.sh 符号链接| HOME
 
@@ -69,8 +70,9 @@ graph TD
 git clone <repo> ~/dotfiles
 cd ~/dotfiles
 ./scripts/bootstrap.sh
-# 安装 Homebrew 包
-brew file install --file cli/.config/brewfile/Brewfile
+# macOS 安装 Homebrew 包
+brew bundle --file cli/.config/brewfile/Brewfile
+# Linux 主机使用原生包管理器，不执行 Brewfile
 # 安装 VS Code/Cursor 扩展
 ./scripts/install-vscode-extensions.sh
 ./scripts/install-vscode-extensions.sh --code-bin cursor
@@ -79,7 +81,7 @@ brew file install --file cli/.config/brewfile/Brewfile
 ### 新增配置文件
 
 1. 将文件移入对应包目录（保持相对路径）
-2. `bootstrap.sh` 会自动扫描并创建 symlink
+2. `bootstrap.sh` 会按平台扫描并创建 symlink；Julia 只链接 `startup.jl`
 3. 敏感文件改为 `.example` 模板，真实文件保持本地
 
 ### 常用命令
@@ -88,15 +90,18 @@ brew file install --file cli/.config/brewfile/Brewfile
 # 预览 bootstrap 操作（不实际执行）
 ./scripts/bootstrap.sh --dry-run
 
+# 在 Linux 主机上显式预览平台筛选
+./scripts/bootstrap.sh --platform linux --dry-run
+
 # 测试还原到临时目录
 ./scripts/bootstrap.sh --home /tmp/dotfiles-test-home
 
 # 手动重建单个 symlink
-ln -sf /Users/skyang/dotfiles/zsh/.zshrc ~/.zshrc
+ln -sf "$HOME/dotfiles/zsh/.zshrc" ~/.zshrc
 
 # 从备份恢复
 rm ~/.zshrc
-cp ~/.dotfiles-backup-20260328-233031/.zshrc ~/.zshrc
+cp ~/.dotfiles-backup-YYYYMMDD-HHMMSS/.zshrc ~/.zshrc
 ```
 
 ## AI 协作提示

@@ -9,11 +9,34 @@
 alias ls "eza --icons --time-style '+%Y-%m-%d %H:%M:%S'"
 alias lg lazygit
 alias tree "eza -T"
-alias pwc "pwd | pbcopy"
 alias ff fastfetch
 alias vi vim
-alias br brew
-alias m-cli "matlab -nodesktop"
+
+function _dotfiles_copy
+    if type -q pbcopy
+        command pbcopy
+    else if type -q wl-copy
+        command wl-copy
+    else if type -q xclip
+        command xclip -selection clipboard
+    else
+        echo "No clipboard command found (pbcopy, wl-copy, or xclip)" >&2
+        return 127
+    end
+end
+function pwc
+    pwd | _dotfiles_copy
+end
+
+if type -q brew
+    alias br brew
+    function brup
+        brew update; and brew upgrade; and brew cleanup
+    end
+end
+if type -q matlab
+    alias m-cli "matlab -nodesktop"
+end
 
 # Config editing
 alias fishconfig "vi ~/.config/fish/config.fish"
@@ -22,10 +45,16 @@ alias vimconfig "vi ~/.vimrc"
 alias sshconfig "vi ~/.ssh/config"
 
 # Maintenance
-alias brup "brew update && brew upgrade && brew cleanup"
-alias prxon "sudo networksetup -setsocksfirewallproxystate Wi-Fi on"
-alias prxof "sudo networksetup -setsocksfirewallproxystate Wi-Fi off"
+if type -q networksetup
+    alias prxon "sudo networksetup -setsocksfirewallproxystate Wi-Fi on"
+    alias prxof "sudo networksetup -setsocksfirewallproxystate Wi-Fi off"
+end
 
 # Project-specific helpers. The venv activation script has a fish-specific
 # variant; sourcing the POSIX one would fail.
-alias dld "source $HOME/Tools/pdf_grabber/.venv/bin/activate.fish && python $HOME/Tools/pdf_grabber/download_pdfs.py"
+if test -f "$HOME/Tools/pdf_grabber/.venv/bin/activate.fish"; and test -f "$HOME/Tools/pdf_grabber/download_pdfs.py"
+    function dld
+        source "$HOME/Tools/pdf_grabber/.venv/bin/activate.fish"; and \
+            python "$HOME/Tools/pdf_grabber/download_pdfs.py" $argv
+    end
+end
