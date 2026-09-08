@@ -30,7 +30,7 @@
 
 ```mermaid
 graph TD
-  ROOT["dotfiles repo\n$HOME/dotfiles"]
+  ROOT["dotfiles repo\n<repo-root>"]
   HOME["$HOME"]
 
   ROOT --> |bootstrap.sh 符号链接| HOME
@@ -97,7 +97,8 @@ brew bundle --file cli/.config/brewfile/Brewfile
 ./scripts/bootstrap.sh --home /tmp/dotfiles-test-home
 
 # 手动重建单个 symlink
-ln -sf "$HOME/dotfiles/zsh/.zshrc" ~/.zshrc
+DOTFILES_ROOT="${DOTFILES_ROOT:-$HOME/dotfiles}"
+ln -sf "$DOTFILES_ROOT/zsh/.zshrc" ~/.zshrc
 
 # 从备份恢复
 rm ~/.zshrc

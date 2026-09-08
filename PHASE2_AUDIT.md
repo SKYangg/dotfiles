@@ -50,6 +50,6 @@
 ## Follow-up Risks
 
 - `editor/.vscode/extensions/extensions.json`
-  - Contains absolute local extension install paths under `/Users/skyang/.vscode/extensions`.
-  - It is retained only as a legacy runtime snapshot for the current machine.
-  - New-machine restore now skips this file and uses `editor/.vscode/extensions/extensions.list` plus `scripts/install-vscode-extensions.sh` instead.
+  - Contains absolute local extension install paths under `$HOME/.vscode/extensions`.
+  - It is excluded from the public repository and remains a legacy runtime snapshot for the current machine.
+  - New-machine restore skips this file and uses `editor/.vscode/extensions/extensions.list` plus `scripts/install-vscode-extensions.sh` instead.

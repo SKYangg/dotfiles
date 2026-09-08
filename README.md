@@ -171,10 +171,9 @@ If you use a different compatible editor CLI, point the script at it:
 
 The manifest lives at
 [`editor/.vscode/extensions/extensions.list`](editor/.vscode/extensions/extensions.list).
-The legacy runtime snapshot
-[`editor/.vscode/extensions/extensions.json`](editor/.vscode/extensions/extensions.json)
-is kept only for current-machine compatibility and is not linked by
-`bootstrap.sh` on new machines.
+The legacy runtime snapshot `editor/.vscode/extensions/extensions.json` is
+intentionally excluded from this public repository and remains local-only.
+It is not linked by `bootstrap.sh` on new machines.
 
 ## Re-linking
 
@@ -184,15 +183,16 @@ from the repo instead of editing the home-directory copy by hand.
 Example:
 
 ```bash
+DOTFILES_ROOT="${DOTFILES_ROOT:-$HOME/dotfiles}"
 mv ~/.zshrc ~/.dotfiles-backup-manual/.zshrc
-ln -s "$HOME/dotfiles/zsh/.zshrc" ~/.zshrc
+ln -s "$DOTFILES_ROOT/zsh/.zshrc" ~/.zshrc
 ```
 
 For nested config paths, create the parent directory first if needed:
 
 ```bash
 mkdir -p ~/.config/ghostty
-ln -s "$HOME/dotfiles/terminal/.config/ghostty/config" ~/.config/ghostty/config
+ln -s "$DOTFILES_ROOT/terminal/.config/ghostty/config" ~/.config/ghostty/config
 ```
 
 ## Restore Rule
