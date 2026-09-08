@@ -1,0 +1,47 @@
+{
+  "python.pythonPath": "python",
+  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.linting.enabled": false,
+  "languageserver": {
+    "julia": {
+      "command": "~/.vim/julia-language-server/start.sh",
+      "cwd": "${fileDirname}",
+      "filetypes": [
+        "julia"
+      ],
+      "rootPatterns": [
+        "Project.toml",
+        "JuliaProject.toml"
+      ],
+      "requireRootPattern": true,
+      "maxRestartCount": 1
+    },
+    "texlab": {
+      "command": "texlab",
+      "filetypes": [
+        "latex",
+        "plaintex",
+        "bib"
+      ],
+      "rootPatterns": [
+        ".latexmkrc",
+        "latexmkrc",
+        ".git"
+      ],
+      "maxRestartCount": 1,
+      "settings": {
+        "texlab": {
+          "build": {
+            "onSave": false,
+            "forwardSearchAfter": false
+          },
+          "chktex": {
+            "onEdit": false,
+            "onOpenAndSave": false
+          }
+        }
+      }
+    }
+  }
+}
