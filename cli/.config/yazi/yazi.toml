@@ -64,6 +64,7 @@ prepend_rules = [
 { url = "*.jl", use = "edit" },
 { url = "*.m", use = "edit" },
 { url = "*.tex", use = "edit" },
+{ url = "*.bib", use = "edit" },
 { url = "*.sql", use = "edit" },
 { url = "*.ini", use = "edit" },
 { url = "*.conf", use = "edit" },
@@ -78,7 +79,11 @@ image_bound = [10000, 10000]
 
 [plugin]
 # Resolve MIME from the extension database in Lua; never invoke file(1).
+# `fetchers` replaces the built-in list, so the default directory rule must be
+# restated here; without `mime.dir` folders get no `folder/*` mime and the
+# folder previewer never runs. `mime.dir` is pure Lua and never spawns file(1).
 fetchers = [
+{ url = "*/", run = "mime.dir", prio = "high", group = "mime" },
 { url = "local://*", run = "mime-ext.local", prio = "high", group = "mime" },
 { url = "remote://*", run = "mime-ext.remote", prio = "high", group = "mime" },
 ]
@@ -119,6 +124,7 @@ prepend_previewers = [
 { url = "*.jl", run = "code" },
 { url = "*.m", run = "code" },
 { url = "*.tex", run = "code" },
+{ url = "*.bib", run = "code" },
 { url = "*.sql", run = "code" },
 { url = "*.ini", run = "code" },
 { url = "*.conf", run = "code" },
