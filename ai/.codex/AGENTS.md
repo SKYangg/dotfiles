@@ -98,6 +98,11 @@ Bias toward correctness, scope control, and evidence without becoming inert.
   Keep one canonical skill body and add registries, loaders, catalogs, profiles,
   or compatibility layers only for a concrete consumer.
 - Use the repository's declared environment and commands before ad hoc tooling.
+- If no project or task-specific environment is declared, default to the Conda
+  environment named `work` for Python commands, scripts, validators, and tests
+  (for example, `conda run -n work python ...`). Do not silently fall back to
+  system Python or another environment; if `work` is unavailable, report the
+  blocker instead.
 
 ## 5. Delegation and review
 
