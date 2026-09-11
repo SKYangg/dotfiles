@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd -P)"
 HOME_DIR="${HOME}"
 BACKUP_ROOT=""
 DRY_RUN=0
@@ -15,6 +15,7 @@ MANAGED_PACKAGES=(
   vim
   git
   aerospace
+  macos
   terminal
   cli
   fish
@@ -28,6 +29,7 @@ MANAGED_PACKAGES=(
 # automatically on a new machine.
 SKIP_SOURCES=(
   "git/.gitconfig"
+  "git/template_ignore"
   "editor/.vscode/extensions/extensions.json"
   "editor/.vscode/extensions/extensions.list"
 )
@@ -105,13 +107,22 @@ should_skip_source() {
   if [[ "$(basename -- "${rel}")" == ".DS_Store" ]]; then
     return 0
   fi
-  # A package's own top-level documentation, e.g. "zsh/CLAUDE.md". Most packages
-  # have one, so they all map to the single target ~/CLAUDE.md and overwrite each
-  # other; whichever package came last in MANAGED_PACKAGES won, which also made
-  # repeated runs non-idempotent. The genuinely managed global rules file is
-  # ai/.claude/CLAUDE.md -> ~/.claude/CLAUDE.md; it has one more path component
-  # and is therefore not matched here.
-  if [[ "${rel}" == */CLAUDE.md ]] && [[ "${rel}" != */*/CLAUDE.md ]]; then
+  # A package's own top-level documentation, e.g. "zsh/CLAUDE.md" or
+  # "vim/maintenance.md". These are repository docs, not home configuration;
+  # linking them scatters ~/CLAUDE.md, ~/maintenance.md, ~/practical-guide.md and
+  # similar files into the home directory. The CLAUDE.md files also collide: they
+  # all map to the single target ~/CLAUDE.md, so whichever package came last in
+  # MANAGED_PACKAGES won, which made repeated runs non-idempotent. The genuinely
+  # managed global rules file is ai/.claude/CLAUDE.md -> ~/.claude/CLAUDE.md; it
+  # has one more path component and is therefore not matched here. Nested
+  # documentation such as cli/.config/yazi/plugins/<name>/README.md is part of a
+  # multi-file plugin and is still linked.
+  if [[ "${rel}" == */*.md ]] && [[ "${rel}" != */*/*.md ]]; then
+    return 0
+  fi
+  # Test suites are repository artifacts, not home configuration. Without this,
+  # vim/tests/* would be linked to ~/tests/*.
+  if [[ "${rel}" == */tests/* ]]; then
     return 0
   fi
   # Julia's project environments are repositories' data, not files relative to
@@ -122,6 +133,11 @@ should_skip_source() {
   # AeroSpace is a macOS-only window manager. Keep the package in the repo for
   # macOS restores, but never install its config on Linux.
   if [[ "${PLATFORM}" != "macos" ]] && [[ "${rel}" == aerospace/* ]]; then
+    return 0
+  fi
+  # macOS system integration (LaunchAgents and their helper scripts). These
+  # paths only make sense on Darwin.
+  if [[ "${PLATFORM}" != "macos" ]] && [[ "${rel}" == macos/* ]]; then
     return 0
   fi
   # Brewfile is an installation manifest for macOS/Homebrew, not a Linux home

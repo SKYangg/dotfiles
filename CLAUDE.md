@@ -83,7 +83,12 @@ brew bundle --file cli/.config/brewfile/Brewfile
 1. 将文件移入对应包目录（保持相对路径）
 2. `bootstrap.sh` 会按平台扫描并创建 symlink；Julia 只链接 `startup.jl`
 3. 敏感文件改为 `.example` 模板，真实文件保持本地
-
+4. 以下内容 **不会** 被链接（见 `bootstrap.sh` 的 `should_skip_source`）：
+   - `.example` 文件与 `.DS_Store`
+   - 包顶层文档 `*/*.md`（如 `vim/maintenance.md`，否则会散落成 `~/maintenance.md`）
+   - 包内测试目录 `*/tests/*`
+   - `SKIP_SOURCES` 显式列出的文件（如 `git/template_ignore`）
+   - 非 macOS 平台下的 `aerospace/*`、`macos/*`、`cli/.config/brewfile/Brewfile`
 ### 常用命令
 
 ```bash
