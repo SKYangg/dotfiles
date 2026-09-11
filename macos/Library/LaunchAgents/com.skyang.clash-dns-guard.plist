@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.skyang.clash-dns-guard</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/skyang/.local/bin/clash-dns-guard.sh</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StartInterval</key>
+	<integer>120</integer>
+	<key>WatchPaths</key>
+	<array>
+		<!-- 系统更新 / 网络配置变更 -->
+		<string>/Library/Preferences/SystemConfiguration/preferences.plist</string>
+		<string>/Library/Preferences/SystemConfiguration/NetworkInterfaces.plist</string>
+		<!-- Clash Party 每次启动 core 都会重写运行态配置 -->
+		<string>/Users/skyang/Library/Application Support/mihomo-party/work/config.yaml</string>
+	</array>
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>StandardOutPath</key>
+	<string>/Users/skyang/Library/Logs/clash-dns-guard.launchd.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/skyang/Library/Logs/clash-dns-guard.launchd.log</string>
+</dict>
+</plist>

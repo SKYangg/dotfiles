@@ -21,6 +21,7 @@
 | fish | `fish/` | Fish shell 配置：conf.d 模块化（PATH/环境变量/键位/工具/别名/颜色）、Starship 提示符、与 zsh 行为对齐 |
 | editor | `editor/` | VS Code / Cursor / Zed 配置、可移植扩展清单 |
 | aerospace | `aerospace/` | macOS 平铺窗口管理器（AeroSpace） |
+| macos | `macos/` | macOS 系统级集成：LaunchAgents 与看护脚本（仅 macOS 还原） |
 | docker | `docker/` | Docker daemon 配置 |
 | ssh | `ssh/` | SSH config 模板（sanitized） |
 | julia | `julia/` | Julia startup 与项目环境（仅 startup 参与 home 链接） |
@@ -45,6 +46,7 @@ graph TD
   ROOT --> CLI["cli/\nyazi atuin btop brew"]
   ROOT --> EDITOR["editor/\nvscode cursor zed"]
   ROOT --> AERO["aerospace/\n.aerospace.toml"]
+  ROOT --> MACOS["macos/\nLibrary/LaunchAgents\n.local/bin"]
   ROOT --> DOCKER["docker/\ndaemon.json"]
   ROOT --> SSH["ssh/\nconfig.example"]
   ROOT --> SCRIPTS["scripts/\nbootstrap.sh"]
