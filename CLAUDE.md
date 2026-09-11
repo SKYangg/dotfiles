@@ -73,7 +73,7 @@ git clone <repo> ~/dotfiles
 cd ~/dotfiles
 ./scripts/bootstrap.sh
 # macOS 安装 Homebrew 包
-brew bundle --file cli/.config/brewfile/Brewfile
+brew bundle install --no-upgrade --file cli/.config/brewfile/Brewfile
 # Linux 主机使用原生包管理器，不执行 Brewfile
 # 安装 VS Code/Cursor 扩展
 ./scripts/install-vscode-extensions.sh

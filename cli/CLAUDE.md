@@ -23,6 +23,7 @@
 | `.condarc` | `~/.condarc` | conda 配置（channels、环境路径） |
 | `.npmrc` | `~/.npmrc` | npm 全局配置 |
 | `.config/neofetch/config.conf` | `~/.config/neofetch/config.conf` | neofetch 系统信息展示配置 |
+| `.config/kaku/kaku.lua.example` | 不链接（模板） | Kaku 外观与快捷键快照，macOS 手动恢复 |
 | `.config/kaku/assistant.toml.example` | 不链接（模板） | Kaku AI 助手配置模板 |
 | `.config/mihomo/config.yaml` | `~/.config/mihomo/config.yaml` | Mihomo（Clash.Meta）代理配置 |
 | `.config/cronboard/config.toml` | `~/.config/cronboard/config.toml` | Cronboard 配置 |
@@ -35,7 +36,7 @@
 
 ## 修改指南
 
-- 添加 Homebrew 包 → 编辑 `Brewfile`，用 `brew file install --file Brewfile` 安装
+- 添加 Homebrew 包 → 编辑 `Brewfile`，用 `brew bundle install --no-upgrade --file Brewfile` 安装
 - 修改 yazi 配置 → 编辑对应 `.toml` 文件（已链接）
 - yazi plugins/flavors 目录内容不纳管（在 `.gitignore` 中），通过 `ya pack -i` 恢复
 - `kaku/assistant.toml` 含 API key，使用 `.example` 模板手动实例化

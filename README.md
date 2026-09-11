@@ -138,6 +138,24 @@ What it does not do:
 - it does not overwrite local secret-bearing files with templates
 - it does not install tools or applications automatically
 
+Before opening a new interactive Zsh on a fresh machine, install the framework,
+theme, and external plugins used by `.zshrc`. These are not installed by
+bootstrap or the Brewfile. With Git available, run the following for the default
+`~/.oh-my-zsh` location (adjust it if you set `ZSH` or `ZSH_CUSTOM`):
+
+```bash
+# Clone only missing directories; existing installations are left untouched.
+[ -e ~/.oh-my-zsh ] || git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+[ -e ~/.oh-my-zsh/custom/themes/powerlevel10k ] || git clone https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
+[ -e ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions ] || git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+[ -e ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting ] || git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+```
+
+Other configured Oh My Zsh plugins are bundled with the framework. These clones
+restore current upstream versions, not a version-pinned snapshot. Check each
+command for errors before opening a new terminal. Direct cloning avoids running
+an installer that might replace `.zshrc`.
+
 After running it on a new machine, review and materialize the local-only
 templates you actually need:
 
@@ -153,7 +171,35 @@ specific; Linux hosts should use their native package manager or an explicit
 host profile:
 
 ```bash
-brew bundle --file cli/.config/brewfile/Brewfile
+brew bundle install --no-upgrade --file cli/.config/brewfile/Brewfile
+```
+
+The manifest records explicitly installed formulae, selected workflow tools, and
+installed casks. Dependencies are resolved by Homebrew; this is not a version lock.
+Legacy App Store entries are comments pending manual confirmation. Third-party
+taps may require explicit package trust on a new host; review those individually.
+Kaku's appearance and shortcut settings are preserved in
+[`cli/.config/kaku/kaku.lua.example`](cli/.config/kaku/kaku.lua.example).
+Bootstrap skips this template. After installing Kaku on macOS, review it and
+copy it manually; keep any existing configuration as a backup first:
+
+```bash
+mkdir -p ~/.config/kaku
+if [ -e ~/.config/kaku/kaku.lua ]; then
+  cp -p ~/.config/kaku/kaku.lua ~/.config/kaku/kaku.lua.backup-$(date +%Y%m%d-%H%M%S)
+fi
+cp -i cli/.config/kaku/kaku.lua.example ~/.config/kaku/kaku.lua
+```
+
+The template loads the installed Kaku defaults and applies personal overrides.
+It expects the Maple Mono NF CN font. This is a snapshot, so later changes made
+in Kaku must be reviewed and copied back manually. AI credentials and session
+history remain local and are not included.
+
+To inspect the manifest without installing anything:
+
+```bash
+brew bundle list --file cli/.config/brewfile/Brewfile
 ```
 
 If you want the same VS Code extension set on a new machine, install from the

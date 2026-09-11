@@ -24,6 +24,9 @@ ueberzug_scale = 1
 ueberzug_offset = [0, 0, 0, 0]
 
 [opener]
+smoothcsv = [
+{ run = "smoothcsv %s", desc = "SmoothCSV", orphan = true, for = "macos" },
+]
 edit = [
 { run = "vim %s", desc = "Vim", block = true, for = "unix" },
 ]
@@ -41,8 +44,9 @@ prepend_rules = [
 { url = "*.txt", use = "edit" },
 { url = "*.log", use = "edit" },
 { url = "*.md", use = "edit" },
-{ url = "*.csv", use = "edit" },
-{ url = "*.tsv", use = "edit" },
+{ url = "*.csv", use = ["smoothcsv", "edit", "open"] },
+{ url = "*.tsv", use = ["smoothcsv", "edit", "open"] },
+{ url = "*.xlsx", use = "open" },
 { url = "*.yaml", use = "edit" },
 { url = "*.yml", use = "edit" },
 { url = "*.toml", use = "edit" },

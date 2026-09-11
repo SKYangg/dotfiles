@@ -1,189 +1,128 @@
+# Homebrew Bundle manifest; audited 2026-09-09.
+# Active entries reflect local installation receipts, not a version lock.
+# Third-party taps may require explicit trust on a new host.
 
-# tap repositories and their packages
+tap "adembc/tap"
+tap "anomalyco/tap"
+tap "antoniorodr/memo"
+tap "farion1231/ccswitch"
+tap "manaflow-ai/cmux"
+tap "quarkdown-labs/quarkdown"
+tap "rcmdnk/file"
+tap "steipete/tap"
+tap "tw93/tap"
 
-tap homebrew/core
-brew aom
-brew bat
-brew berkeley-db@5
-brew brotli
-brew ca-certificates
-brew cairo
-brew cfitsio
-brew cgif
-brew chafa
-brew cli11
-brew cmake
-brew duckdb
-brew fastfetch
-brew fd
-brew ffmpeg
-brew fftw
-brew file-formula
-brew fmt
-brew fontconfig
-brew freetype
-brew fribidi
-brew fzf
-brew gcc
-brew gdbm
-brew gdk-pixbuf
-brew gettext
-brew giflib
-brew glib
-brew glow
-brew gmp
-brew gnupg
-brew gnutls
-brew gpgme
-brew graphite2
-brew harfbuzz
-brew hdf5
-brew highway
-brew hwloc
-brew icu4c@77
-brew imagemagick
-brew imath
-brew isl
-brew jansson
-brew jasper
-brew jpeg-turbo
-brew jpeg-xl
-brew jq
-brew libaec
-brew libarchive
-brew libassuan
-brew libavif
-brew libb2
-brew libde265
-brew libdeflate
-brew libdicom
-brew libevent
-brew libexif
-brew libgcrypt
-brew libgit2
-brew libgpg-error
-brew libheif
-brew libidn2
-brew libimagequant
-brew libksba
-brew liblqr
-brew libmagic
-brew libmatio
-brew libmpc
-brew libnghttp2
-brew libomp
-brew libpng
-brew libraw
-brew librsvg
-brew libsixel
-brew libsodium
-brew libspng
-brew libssh2
-brew libtasn1
-brew libtiff
-brew libtool
-brew libunistring
-brew libusb
-brew libvmaf
-brew libx11
-brew libxau
-brew libxcb
-brew libxdmcp
-brew libxext
-brew libxml2
-brew libxrender
-brew libyaml
-brew little-cms2
-brew lua
-brew lz4
-brew lzo
-brew m4
-brew mas
-brew mozjpeg
-brew mpdecimal
-brew mpfr
-brew ncurses
-brew nettle
-brew nlohmann-json
-brew npth
-brew nspr
-brew nss
-brew oniguruma
-brew open-mpi
-brew openexr
-brew openjpeg
-brew openslide
-brew openssl@3
-brew p11-kit
-brew pango
-brew pcre
-brew pcre2
-brew perl
-brew pinentry
-brew pixman
-brew pkgconf
-brew pmix
-brew poppler
-brew python@3.13
-brew range-v3
-brew readline
-brew ripgrep
-brew ruby
-brew rustup
-brew shared-mime-info
-brew sevenzip
-brew spdlog
-brew sqlite
-brew tbb
-brew the_silver_searcher
-brew thefuck
-brew tlrc
-brew unbound
-brew universal-ctags
-brew uthash
-brew uv
-brew vim
-brew vips
-brew webp
-brew x265
-brew xorgproto
-brew xz
-brew yazi
-brew zoxide
-brew zstd
+# Explicitly installed formulae; dependencies are resolved by Homebrew.
+brew "adb-enhanced"
+brew "adembc/tap/lazyssh"
+brew "anomalyco/tap/opencode"
+brew "antoniorodr/memo/memo"
+brew "bat"
+brew "btop"
+brew "chezmoi"
+brew "difftastic"
+brew "duf"
+brew "fastfetch"
+brew "fd"
+brew "ffmpeg"
+brew "ffmpegthumbnailer"
+brew "file-formula"
+brew "fish"
+brew "fzf"
+brew "gcc"
+brew "gdb"
+brew "gh"
+brew "ghostscript"
+brew "git-delta"
+brew "glow"
+brew "hstr"
+brew "icu4c@78"
+brew "imagemagick"
+brew "jq"
+brew "latexindent"
+brew "lazygit"
+brew "lynx"
+brew "mas"
+brew "maven"
+brew "mole"
+brew "ncdu"
+brew "nmap"
+brew "pandoc"
+brew "perl"
+brew "poppler"
+brew "protobuf"
+brew "quarkdown-labs/quarkdown/quarkdown"
+brew "rcmdnk/file/brew-file"
+brew "ripgrep"
+brew "rustup"
+brew "s-search"
+brew "sevenzip"
+brew "sshx"
+brew "starship"
+brew "steipete/tap/remindctl"
+brew "summarize"
+brew "superfile"
+brew "telnet"
+brew "tesseract"
+brew "texlab"
+brew "the_silver_searcher"
+brew "thefuck"
+brew "tlrc"
+brew "tmux"
+brew "universal-ctags"
+brew "uv"
+brew "vim"
+brew "xh"
+brew "yazi"
+brew "zoxide"
 
-tap homebrew/cask
-cask kitty
-cask miniconda
-cask visual-studio-code
+# Installed desktop applications and fonts.
+cask "basictex"
+cask "blender"
+cask "chatgpt"
+cask "devtoys"
+cask "discord"
+cask "farion1231/ccswitch/cc-switch"
+cask "font-maple-mono"
+cask "font-maple-mono-nf"
+cask "font-maple-mono-nf-cn"
+cask "latest"
+cask "maccy"
+cask "manaflow-ai/cmux/cmux"
+cask "miaoyan"
+cask "miniconda"
+cask "qlmarkdown"
+cask "quarto"
+cask "smoothcsv"
+cask "syntax-highlight"
+cask "tor-browser"
+cask "tw93/tap/kakuku"
+cask "visual-studio-code"
+cask "xquartz"
 
-tap jstkdng/programs
-
-tap rcmdnk/file
-brew brew-file
-
-# App Store applications
-appstore 1586435171 Actions (3.8.0)
-appstore 1452111498 AnDrop (1.3)
-appstore 1037126344 Apple Configurator (2.18)
-appstore 1451400394 bookmarker for pinboard (1.12)
-appstore 1295775756 Fashion Art (1.3.5)
-appstore 409183694 Keynote (14.4)
-appstore 462062816 Microsoft PowerPoint (16.102)
-appstore 462058435 Microsoft Excel (16.102)
-appstore 462054704 Microsoft Word (16.102)
-appstore 1014850245 Monit (2.2.4)
-appstore 6448362669 NeoServer (7.8.5)
-appstore 944848654 NeteaseMusic (3.0.20)
-appstore 409203825 Numbers (14.4)
-appstore 823766827 OneDrive (25.184.0921)
-appstore 1540160809 OneTab (1.87)
-appstore 409201541 Pages (14.4)
-appstore 6752801625 Picser (1.1.0)
-appstore 1572202501 Plain Text Editor (1.7.1)
-appstore 451108668 QQ (6.9.81)
-appstore 1429033973 RunCat (12.4)
-appstore 6444322545 SingleFile (1.22.81)
-appstore 836500024 WeChat (4.1.1)
-appstore 1295203466 Windows App (11.2.4)
-appstore 1221250572 Xnip (2.3.4)
+# Legacy App Store inventory: NOT installed automatically.
+# Reconfirm account access and desired apps before activating mas entries.
+# appstore 1586435171 Actions (3.8.0)
+# appstore 1452111498 AnDrop (1.3)
+# appstore 1037126344 Apple Configurator (2.18)
+# appstore 1451400394 bookmarker for pinboard (1.12)
+# appstore 1295775756 Fashion Art (1.3.5)
+# appstore 409183694 Keynote (14.4)
+# appstore 462062816 Microsoft PowerPoint (16.102)
+# appstore 462058435 Microsoft Excel (16.102)
+# appstore 462054704 Microsoft Word (16.102)
+# appstore 1014850245 Monit (2.2.4)
+# appstore 6448362669 NeoServer (7.8.5)
+# appstore 944848654 NeteaseMusic (3.0.20)
+# appstore 409203825 Numbers (14.4)
+# appstore 823766827 OneDrive (25.184.0921)
+# appstore 1540160809 OneTab (1.87)
+# appstore 409201541 Pages (14.4)
+# appstore 6752801625 Picser (1.1.0)
+# appstore 1572202501 Plain Text Editor (1.7.1)
+# appstore 451108668 QQ (6.9.81)
+# appstore 1429033973 RunCat (12.4)
+# appstore 6444322545 SingleFile (1.22.81)
+# appstore 836500024 WeChat (4.1.1)
+# appstore 1295203466 Windows App (11.2.4)
+# appstore 1221250572 Xnip (2.3.4)
