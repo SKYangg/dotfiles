@@ -358,3 +358,103 @@ VimTeX 固定 **v2.15**，当前共 17 个插件。禁用其默认快捷键、�
 原配置、旧构建器和 Skim 偏好备份在一次性本地备份目录中，系统可能清理。回退仅恢复本轮 `.vimrc`、`latex-build.vim` 和文档差异；Skim 仅恢复 `SKTeXEditorPreset`、`SKTeXEditorCommand`、`SKTeXEditorArguments` 三项旧值（原先无显式值则删除这三个覆盖项），不要导入完整旧偏好覆盖后续设置。
 
 参考：[VimTeX 官方文档](https://github.com/lervag/vimtex/blob/v2.15/doc/vimtex.txt)。
+
+### 测试与维护
+
+版本状态、回归测试命令、更新与恢复步骤见 [Vim 维护记录](maintenance.md)。
+改动构建配置后，从任意目录运行 `<repo>/vim/tests/run-latex-build-tests.sh` 复核。
+
+## Markdown 轻量写作模式（2026-09-10）
+
+重启 Vim 后，在 Markdown 文件中使用 `Space m` 打开局部菜单：
+
+| 按键 | 命令 | 用途 |
+|---|---|---|
+| `Space mf` | `:MarkdownFocusToggle` | 当前窗口专注模式，重复执行恢复进入前设置 |
+| `Space mc` | `:MarkdownSourceToggle` | 显示/简化 Markdown 源码标记 |
+| `Space mt` | `:MarkdownOutline` | 已有 vim-markdown 标题目录，回车跳转 |
+
+专注模式隐藏行号与光标行，启用软换行、自然断行及符号简化；光标所在行显示源码。
+保留状态栏、窗口布局、`j/k`、折叠和 `Space gm`、`[[` / `]]`。不保存文件，不修改正文。
+在专注模式内切换源码只临时生效，退出仍恢复进入前显示设置。
+切换窗口焦点保留专注；当前窗口换文件时结束模式；新分屏恢复普通显示，不继承专注。
+离开 Markdown 文件类型时移除本模块局部按键。恢复后不会保留模式内手动更改的受管选项。
+
+自动化测试已覆盖窗口选项恢复、分屏、buffer/文件类型切换、正文与修改标志、真实目录和菜单调用。
+Ghostty 界面访问被工具拒绝，中文长段落、链接、公式和代码块的实际视觉效果仍待验收。
+浏览器预览、模板、Marp 均未在本阶段实现。
+
+Space 提示入口使用 `<nowait>`，由 which-key 接收后续组合键，不再先等待 Vim 的映射超时。
+Markdown 同时设置局部 Space 入口，避免局部组合键优先级重新引入等待；离开该文件类型后恢复全局入口。
+全局 `timeoutlen=500` 保留。快速连按 `Space mf` 和提示内选择均已通过命令级验证；实际窗口绘制延迟未测量。
+
+## Markdown 浏览器预览（2026-09-10，部分验收）
+
+重启 Vim 后，Markdown 文件中 `Space mp` / `:MarkdownPreview` 手动启动，
+`Space ms` / `:MarkdownPreviewStop` 停止；`Space m` 菜单已增加对应入口。
+保留 `Space gm` 终端文字预览。浏览器预览读取 buffer，不主动保存正文。
+配置使用插件原生实时刷新、组合预览标签页；切换 Markdown buffer 更新同一预览。
+仅监听本机回环地址，退出 Vim 关闭服务。
+
+新增 markdown-preview.nvim 固定提交 `a923f5fc5ba36a3b17e289dc35dc17f66d0548ee`。
+重建时仅对该插件执行安装钩子，使用现有 Node/npm；不要全量升级插件。
+插件声明支持 KaTeX、Mermaid 和本地图片，但复杂语法是否支持取决于其内置版本。
+
+验收：真实 Vim 服务启动、HTTP 页面返回、回环监听和退出后监听消失已验证；原有写作回归通过。
+浏览器工具阻止本机 URL，视觉验收未完成；后续协议验收已通过未保存刷新、重复启动复用连接、切换文件及停止断开；浏览器实际标签行为仍需视觉确认。
+安装出现上游 debug 旧依赖弃用警告，未擅自升级上游依赖。当前状态为部分完成，不宣称完整渲染验收通过。
+
+验收更新（2026-09-10）：用户在浏览器查看测试样例并确认“都正常”，中文、公式、本地图片、Mermaid 与代码块的本次视觉验收已完成。前述视觉未验收状态由此更新；结论仅覆盖已检查样例。
+
+## 2026-09-11 配置修复与模板
+
+- 恢复上次光标位置的引号错误已修正；`Q` 和双 Esc 的注释不再进入映射动作。
+- 关闭 `autowrite`，只在显式保存或已有预览/构建入口保存。
+- Markdown 英文拼写默认关闭，`Space mw` 切换；`Space m` 显示操作提示。
+- 标题/专注等已有入口不变；which-key 补充诊断、符号、重命名、代码操作和 glow 描述。
+
+仓库维护的模板在 `.vim/writing-snippets/markdown.snippets`，由 UltiSnips 绝对目录入口加载，无需覆盖用户的 `~/.vim/UltiSnips`。
+在 Markdown 中输入触发词后按 Tab：
+
+| 触发词 | 用途 |
+|---|---|
+| `mdmath` | 展示公式 |
+| `mdfig` | 图片和图注 |
+| `mdpaper` | 文献笔记骨架 |
+| `marpdoc` | Marp 文档头和标题页 |
+| `marpslide` | 新幻灯片 |
+| `marpimage` | 图片页 |
+| `marpmath` | 公式页 |
+| `marpnote` | 演讲备注 |
+
+Marp 配置重载保留已有任务，旧通道输出不会写入新任务日志；`:MarpLog export` / `preview` 每次读取最新日志快照。
+启动失败会明确报告；失败时删除本次仍为空的预留文件，保留已有导出。日志快照不是实时滚动终端。
+此前浏览器验收暂停；恢复测试结果见本节末尾。
+
+## Marp 操作入口与当前边界（2026-09-11）
+
+文首完整 YAML 写入 `marp: true` 后保存，或用 `:MarpEnable` 手动启用；
+`:MarpDisable` 手动关闭，`:MarpAuto` 恢复按标记识别。普通 Markdown 预览与 Marp 不混用。
+
+| 按键 | 命令 | 行为 |
+|---|---|---|
+| `Space map` | `:MarpPreview` | 保存当前文件，监听生成 HTML，首次生成后用 Firefox 打开 |
+| `Space mae` | `:MarpExport` | 保存当前文件，使用 Firefox 导出唯一命名 PDF |
+| `Space mas` | `:MarpStop` | 停止本 Vim 会话的 Marp 预览监听 |
+| `Space mal` | `:MarpLog preview` | 重新读取预览日志 |
+| `Space mao` | `:MarpLog export` | 重新读取导出日志 |
+
+每个 Vim 会话最多一个预览和一个导出；切换到另一文稿前先停止旧预览。
+输出是文稿同目录的 `.marp-vim-*.html` / `.pdf`，属于隐藏文件；命令会报告实际路径。
+PDF 保留供使用；预览 HTML 当前也保留，不承诺关闭浏览器标签或自动删除文件。
+默认不加载项目配置；需要时显式设置 `g:marp_config`。可信文稿如需本地图片导出，
+可在当前会话显式设置 `let g:marp_allow_local_files=1`，完成后恢复为 0，不写入全局宽松默认。
+
+CLI 当前安装于 `~/.local/share/vim-marp/node_modules/.bin/marp`，版本 4.5.1。
+重建方式：`npm install --prefix ~/.local/share/vim-marp --save-exact @marp-team/marp-cli@4.5.1 --no-audit --no-fund`。
+自定义已安装 CLI 可设置 `g:marp_command`；不会在快捷键中自动下载安装。
+Firefox 路径固定为本机应用路径，不自动回退 Chrome。
+
+状态：模拟任务回归、Firefox 实际预览和保存后自动刷新、停止监听、两页 PDF 导出均已通过。中文、公式、本地 SVG 和分页已进行样例视觉检查。
+
+CLI 显式传入 `--no-stdin`，避免 Vim job 等待标准输入。PDF 导出进程使用独立临时 `MOZ_APP_DATA`，解决本机 Firefox 的 profile 启动错误；任务退出时清理，不修改用户 Firefox 配置。停止监听后浏览器标签页仍保留。

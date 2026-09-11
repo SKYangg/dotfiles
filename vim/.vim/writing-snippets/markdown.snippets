@@ -1,0 +1,84 @@
+snippet mdmath "Display equation" b
+$$
+${1:E = mc^2}
+$$
+$0
+endsnippet
+
+snippet mdfig "Figure with caption" b
+![${1:说明}](${2:figure.png})
+
+*图：${3:图注}*
+$0
+endsnippet
+
+snippet mdpaper "Literature note" b
+# ${1:论文标题}
+
+来源：${2:DOI 或链接}
+
+## 研究问题
+$3
+
+## 方法与主要结果
+$4
+
+## 证据与局限
+$5
+
+## 与当前研究的联系
+$0
+endsnippet
+
+snippet marpdoc "Marp document" b
+---
+marp: true
+theme: default
+size: 16:9
+paginate: true
+---
+
+# ${1:报告标题}
+
+${2:作者与日期}
+$0
+endsnippet
+
+snippet marpslide "Marp slide" b
+
+---
+
+# ${1:标题}
+
+$0
+endsnippet
+
+snippet marpimage "Marp image slide" b
+
+---
+
+# ${1:标题}
+
+![width:${2:800}px](${3:figure.png})
+$0
+endsnippet
+
+snippet marpmath "Marp equation slide" b
+
+---
+
+# ${1:标题}
+
+$$
+${2:E = mc^2}
+$$
+
+${3:符号与单位说明}
+$0
+endsnippet
+
+snippet marpnote "Marp speaker notes" b
+<!--
+$0
+-->
+endsnippet

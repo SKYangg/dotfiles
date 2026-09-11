@@ -116,3 +116,16 @@ Vim 编辑器配置，基于 vim-plug 管理插件，提供轻量编辑、搜索
 - 禁用 VimTeX 默认映射、补全、缩进及语法覆盖；保留 CoC/Texlab 和原有编辑按键。`Space lb/lv/ls/lo` 分别构建、PDF 定位、停止、输出。
 - TeX buffer 按需注册唯一 Vim server；Skim Custom 编辑器使用 Homebrew Vim 的 `VimtexInverseSearch`。回调已验证定位到正确测试文件/行；Skim 鼠标点击和前台焦点尚未完成 GUI 验收（界面工具超时）。
 - 操作与恢复见实用手册第 14 节。原第五轮实现与 Skim 偏好快照保留在一次性本地备份目录中，可能被系统清理。
+
+## Markdown 轻量写作（2026-09-10）
+
+- `.vim/markdown-writing.vim` 由 `.vimrc` 按真实仓库路径加载，无新增插件。
+- Markdown buffer 的 `Space m` 使用 which-key 直接字典菜单；`mf/mc/mt` 为专注、源码显示和标题目录。
+- 显示状态按窗口保存；切换文件恢复，切换焦点保留，新分屏不继承模式；不修改或保存正文。
+- 具体操作与验收边界见实用手册末节。自动化通过，Ghostty 视觉验收受界面工具限制尚未完成。
+
+## 2026-09-11 审计修复
+
+- `noautowrite` 保持手动保存边界；Markdown 拼写默认关闭，`Space mw` 切换。
+- 维护模板在 `.vim/writing-snippets/markdown.snippets`，通过 UltiSnips 目录配置直接读取，不覆盖 home snippets。
+- Marp 模块重载保留任务，日志按调用刷新；模拟回归见 `tests/marp-cases.vim`。浏览器实际验收仍暂停。
