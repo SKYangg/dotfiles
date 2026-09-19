@@ -23,6 +23,7 @@ MANAGED_PACKAGES=(
   ai
   docker
   julia
+  cargo
 )
 
 # These files exist in managed package directories but should not be linked

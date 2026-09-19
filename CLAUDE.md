@@ -15,6 +15,7 @@
 | tmux | `tmux/` | tmux 复用器配置 |
 | vim | `vim/` | Vim 编辑器配置 |
 | git | `git/` | Git 全局模板（sanitized）、全局 .gitignore |
+| cargo | `cargo/` | Cargo registry 镜像源配置（crates.io → 国内镜像） |
 | ai | `ai/` | Claude Code (CCG)、Codex 配置模板与上下文规则 |
 | terminal | `terminal/` | Ghostty 终端、Starship 提示符、Warp |
 | cli | `cli/` | Homebrew Brewfile、yazi、atuin、btop、neofetch、uv、conda、npm |
@@ -41,6 +42,7 @@ graph TD
   ROOT --> TMUX["tmux/\n.tmux.conf"]
   ROOT --> VIM["vim/\n.vimrc"]
   ROOT --> GIT["git/\n.gitconfig (template)"]
+  ROOT --> CARG["cargo/\n.cargo/config.toml"]
   ROOT --> AI["ai/\n.claude/ .codex/"]
   ROOT --> TERM["terminal/\nghostty starship warp"]
   ROOT --> CLI["cli/\nyazi atuin btop brew"]
