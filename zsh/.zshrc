@@ -8,7 +8,19 @@ fi
 
 # Oh My Zsh
 export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Powerlevel10k requires zsh >= 5.1. Fall back to the built-in robbyrussell on
+# older zsh (e.g. CentOS 7 ships 5.0.x as /usr/bin/zsh) so the config still
+# loads on every host. Modern zsh (macOS, or a locally built ~/.local/bin/zsh)
+# continues to use powerlevel10k unmodified.
+autoload -Uz is-at-least
+if is-at-least 5.1; then
+	ZSH_THEME="powerlevel10k/powerlevel10k"
+	_DOTFILES_USE_P10K=1
+else
+	ZSH_THEME="robbyrussell"
+	_DOTFILES_USE_P10K=0
+fi
 
 plugins=(
 	# Core
@@ -175,7 +187,10 @@ function y() {
 }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+if [[ "${_DOTFILES_USE_P10K:-0}" == 1 && -f ~/.p10k.zsh ]]; then
+	source ~/.p10k.zsh
+fi
+unset _DOTFILES_USE_P10K
 
 # Kaku is managed outside this repository. It initializes Starship only when
 # TERM_PROGRAM=Kaku, so keep p10k authoritative by hiding only Starship's
