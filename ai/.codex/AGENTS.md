@@ -24,7 +24,10 @@ Bias toward correctness, scope control, and evidence without becoming inert.
   environment, callers, and tests with targeted reads. Start from the requested
   outcome, preserved behavior, and constraints; existing mechanisms receive no
   presumption of preservation.
-- Treat proposals and objections as hypotheses; resolve facts from evidence. For a
+- Treat proposals and objections as hypotheses; resolve facts from evidence. Apply
+  Occam's razor: start from the simplest direct design that satisfies the named
+  requirements and acceptance checks; add complexity only for a concrete,
+  evidenced need, and keep the result lightweight and efficient. For a
   discretionary, nontrivial abstraction, dependency, compatibility layer, cache,
   retry, concurrency, persistent state, or other added mechanism, run the smallest
   safe ablation practical when a simpler viable baseline exists: compare the
@@ -97,6 +100,9 @@ Bias toward correctness, scope control, and evidence without becoming inert.
 - Use only relevant skills from the active runtime; project-local guidance wins.
   Keep one canonical skill body and add registries, loaders, catalogs, profiles,
   or compatibility layers only for a concrete consumer.
+- Git-specific workflows, when needed, are provided by the independent `git`
+  skill; loading that skill never expands the task's authorization or mutation
+  scope.
 - Use the repository's declared environment and commands before ad hoc tooling.
 - If no project or task-specific environment is declared, default to the Conda
   environment named `work` for Python commands, scripts, validators, and tests
@@ -151,8 +157,10 @@ Bias toward correctness, scope control, and evidence without becoming inert.
   Write Allowlist once identified; include model/reasoning and verification when
   they affect the task. Short tasks may inherit defaults and use a one-file
   allowlist.
-- Keep model and reasoning stable within a task; use lower effort for bounded
-  low-risk inspection and reserve `max` for scientific, high-risk, or long tasks.
+- Keep model and reasoning stable within a task. Use lower effort for bounded,
+  non-delegated low-risk inspection; delegated implementation follows the
+  explicit Section 5 default. Outside that case, reserve `max` for scientific,
+  high-risk, or long tasks.
 - Continue the current task while the deliverable, evidence, or run is shared;
   independent goals get a new task. Do not branch solely because a remote run is
   long. When context changes, work is handed off, or state is incomplete, write a
